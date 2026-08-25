@@ -3,88 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>ПРОТОКОЛ: БАРАБАН</title>
+<title>ПРОТОКОЛ: РЕЙ</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --void: #050508; --panel: #0f111a; --panel-2: #161925; --line: #2a3344;
-  --red: #ff2a4d; --red-glow: rgba(255, 42, 77, 0.4); 
-  --cyan: #00f0ff; --cyan-glow: rgba(0, 240, 255, 0.4);
-  --amber: #ffcc00; --amber-glow: rgba(255, 204, 0, 0.4);
-  --green: #00ff9d; --text: #eaf1f5; --text-dim: #8892b0;
+  --void: #0a1628; --panel: #12223d; --panel-2: #1a2d4d; --line: #2a4a7a;
+  --rei-blue: #4fc3f7; --rei-glow: rgba(79, 195, 247, 0.5);
+  --rei-red: #ff1744; --rei-red-glow: rgba(255, 23, 68, 0.5);
+  --rei-white: #e3f2fd;
+  --magi: #69f0ae; --magi-glow: rgba(105, 240, 174, 0.4);
+  --text: #e3f2fd; --text-dim: #7a9cc6;
   --font-display: 'Press Start 2P', monospace; --font-body: 'JetBrains Mono', monospace;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: #000; font-family: var(--font-body); color: var(--text); }
 .app { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--void);
-  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-image: 
+    linear-gradient(rgba(79, 195, 247, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79, 195, 247, 0.04) 1px, transparent 1px);
   background-size: 24px 24px; background-position: -1px -1px; position: relative;
-  display: flex; flex-direction: column; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
-.topbar { padding: 12px 16px 10px; border-bottom: 2px solid var(--line);
-  background: linear-gradient(180deg, #10141c 0%, rgba(10,12,17,0) 100%); position: sticky; top: 0; z-index: 5; }
+  display: flex; flex-direction: column; }
+.topbar { padding: 12px 16px 10px; border-bottom: 2px solid var(--rei-blue);
+  background: linear-gradient(180deg, #0d1f3a 0%, rgba(10,22,40,0) 100%); position: sticky; top: 0; z-index: 5; }
 .topbar-row { display: flex; align-items: center; justify-content: space-between; }
-.brand { font-family: var(--font-display); font-size: 10px; letter-spacing: 1px; color: var(--red); text-shadow: 0 0 8px var(--red-glow); }
-.status { display: flex; align-items: center; gap: 6px; font-size: 9px; color: var(--green); }
-.dot { width: 6px; height: 6px; background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink 1.4s infinite; }
+.brand { font-family: var(--font-display); font-size: 10px; letter-spacing: 1px; color: var(--rei-blue); text-shadow: 0 0 8px var(--rei-glow); }
+.status { display: flex; align-items: center; gap: 6px; font-size: 9px; color: var(--magi); }
+.dot { width: 6px; height: 6px; background: var(--magi); box-shadow: 0 0 6px var(--magi); animation: blink 1.4s infinite; }
 @keyframes blink { 0%, 100% { opacity: 1 } 50% { opacity: .2 } }
-.subtitle { margin-top: 4px; font-size: 10px; color: var(--text-dim); letter-spacing: .5px; }
+.subtitle { margin-top: 4px; font-size: 8px; color: var(--text-dim); letter-spacing: .5px; font-style: italic; }
 .content { flex: 1; padding: 12px 12px 90px; overflow-y: auto; }
-h2.section-title { font-family: var(--font-display); font-size: 10px; color: var(--cyan); letter-spacing: 1px;
-  margin: 16px 0 8px; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 6px var(--cyan-glow); }
+h2.section-title { font-family: var(--font-display); font-size: 10px; color: var(--rei-blue); letter-spacing: 1px;
+  margin: 16px 0 8px; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 6px var(--rei-glow); }
 h2.section-title:first-child { margin-top: 0; }
 h2.section-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
-.hero { border: 2px solid var(--line); background: var(--panel); padding: 14px 12px; position: relative; overflow: hidden; margin-bottom: 6px; border-radius: 4px; }
-.hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, rgba(255,42,77,.06) 0 2px, transparent 2px 8px); }
+.hero { border: 2px solid var(--rei-blue); background: var(--panel); padding: 14px 12px; position: relative; overflow: hidden; margin-bottom: 6px; border-radius: 4px; }
+.hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, rgba(79,195,247,.06) 0 2px, transparent 2px 8px); }
 .hero-title { font-family: var(--font-display); font-size: 12px; line-height: 1.6; color: var(--text); position: relative; }
-.hero-title span { color: var(--red); text-shadow: 0 0 8px var(--red-glow); }
-.hero-sub { margin-top: 8px; font-size: 10px; color: var(--text-dim); position: relative; }
+.hero-title span { color: var(--rei-red); text-shadow: 0 0 8px var(--rei-red-glow); }
+.hero-sub { margin-top: 8px; font-size: 9px; color: var(--text-dim); position: relative; font-style: italic; }
 .btn { font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: .5px; padding: 10px 12px;
   border: 2px solid var(--line); background: var(--panel-2); color: var(--text); cursor: pointer; text-transform: uppercase; text-align: center;
-  transition: all 0.2s ease; position: relative; overflow: hidden; border-radius: 4px; }
+  transition: all 0.2s ease; border-radius: 4px; }
 .btn:active { transform: translateY(1px); }
 .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-.btn-primary { background: var(--red); border-color: var(--red); color: #160406; }
-.btn-primary:hover:not(:disabled) { box-shadow: 0 0 15px var(--red-glow); }
-.btn-cyan { border-color: var(--cyan); color: var(--cyan); }
-.btn-cyan:hover:not(:disabled) { box-shadow: 0 0 15px var(--cyan-glow); }
+.btn-primary { background: var(--rei-red); border-color: var(--rei-red); color: #fff; }
+.btn-primary:hover:not(:disabled) { box-shadow: 0 0 15px var(--rei-red-glow); }
+.btn-cyan { border-color: var(--rei-blue); color: var(--rei-blue); }
+.btn-cyan:hover:not(:disabled) { box-shadow: 0 0 15px var(--rei-glow); }
 .btn-full { width: 100%; }
 .btn-row { display: flex; gap: 6px; }
 .btn:disabled { opacity: .35; cursor: not-allowed; }
 .card { border: 1px solid var(--line); background: var(--panel); padding: 10px; margin-bottom: 8px; border-radius: 4px; transition: border-color 0.2s; }
-.card:hover { border-color: var(--text-dim); }
+.card:hover { border-color: var(--rei-blue); }
 .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.prize { font-family: var(--font-display); font-size: 10px; color: var(--amber); line-height: 1.6; text-shadow: 0 0 6px var(--amber-glow); }
+.prize { font-family: var(--font-display); font-size: 10px; color: var(--rei-blue); line-height: 1.6; text-shadow: 0 0 6px var(--rei-glow); }
 .tag { font-size: 9px; padding: 2px 5px; border: 1px solid var(--line); color: var(--text-dim); letter-spacing: .5px; text-transform: uppercase; border-radius: 3px; }
-.tag-live { color: var(--green); border-color: var(--green); }
-.tag-red { color: var(--red); border-color: var(--red); }
+.tag-live { color: var(--magi); border-color: var(--magi); }
+.tag-red { color: var(--rei-red); border-color: var(--rei-red); }
 .meta-row { display: flex; gap: 10px; margin-top: 8px; font-size: 9.5px; color: var(--text-dim); flex-wrap: wrap; }
 .meta-row b { color: var(--text); }
-.empty { border: 1px dashed var(--line); padding: 16px 12px; text-align: center; color: var(--text-dim); font-size: 10px; border-radius: 4px; }
-.overlay { position: absolute; inset: 0; background: rgba(4,5,8,.85); z-index: 20; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
-.modal { width: 100%; max-width: 430px; background: var(--panel); border-top: 2px solid var(--red); padding: 16px 14px 18px; max-height: 88vh; overflow-y: auto; border-radius: 8px 8px 0 0; }
-.modal h3 { font-family: var(--font-display); font-size: 11px; color: var(--red); margin: 0 0 12px; }
+.empty { border: 1px dashed var(--line); padding: 16px 12px; text-align: center; color: var(--text-dim); font-size: 10px; border-radius: 4px; font-style: italic; }
+.overlay { position: absolute; inset: 0; background: rgba(10,22,40,.92); z-index: 20; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
+.modal { width: 100%; max-width: 430px; background: var(--panel); border-top: 2px solid var(--rei-red); padding: 16px 14px 18px; max-height: 88vh; overflow-y: auto; border-radius: 8px 8px 0 0; }
+.modal h3 { font-family: var(--font-display); font-size: 11px; color: var(--rei-red); margin: 0 0 12px; }
 .field { margin-bottom: 12px; }
 .field label { display: block; font-size: 9px; color: var(--text-dim); margin-bottom: 5px; letter-spacing: .5px; text-transform: uppercase; }
 .field input { width: 100%; background: var(--void); border: 1px solid var(--line); color: var(--text); padding: 9px; font-family: var(--font-body); font-size: 12px; border-radius: 4px; }
-.field input:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 8px var(--cyan-glow); }
-.hint { font-size: 9px; color: var(--text-dim); margin-top: 3px; }
-.err { font-size: 9px; color: var(--red); margin-top: 8px; min-height: 12px; }
-.nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; display: flex; border-top: 2px solid var(--line); background: #0d1017; z-index: 10; }
-.nav-item { flex: 1; padding: 9px 2px 10px; text-align: center; background: none; border: none; color: var(--text-dim); cursor: pointer; font-family: var(--font-body); font-size: 9px; letter-spacing: .5px; text-transform: uppercase; transition: color 0.2s; }
+.field input:focus { outline: none; border-color: var(--rei-blue); box-shadow: 0 0 8px var(--rei-glow); }
+.hint { font-size: 9px; color: var(--text-dim); margin-top: 3px; font-style: italic; }
+.err { font-size: 9px; color: var(--rei-red); margin-top: 8px; min-height: 12px; }
+.nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; display: flex; border-top: 2px solid var(--rei-blue); background: #0a1628; z-index: 10; }
+.nav-item { flex: 1; padding: 9px 2px 10px; text-align: center; background: none; border: none; color: var(--text-dim); cursor: pointer; font-family: var(--font-body); font-size: 8px; letter-spacing: .5px; text-transform: uppercase; transition: color 0.2s; }
 .nav-item svg { display: block; margin: 0 auto 3px; }
-.nav-item.active { color: var(--cyan); }
-.nav-item.active .ic { fill: var(--cyan); }
+.nav-item.active { color: var(--rei-blue); }
+.nav-item.active .ic { fill: var(--rei-blue); }
 .ic { fill: var(--text-dim); transition: fill 0.2s; }
 .avatar { image-rendering: pixelated; object-fit: contain; background: transparent; flex-shrink: 0; border-radius: 4px; }
 .row { display: flex; align-items: center; gap: 8px; }
 .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 12px 0; }
 .stat { border: 1px solid var(--line); background: var(--panel); padding: 10px 6px; text-align: center; border-radius: 4px; }
-.stat b { display: block; font-family: var(--font-display); font-size: 13px; color: var(--cyan); margin-bottom: 4px; }
+.stat b { display: block; font-family: var(--font-display); font-size: 13px; color: var(--rei-blue); margin-bottom: 4px; }
 .stat span { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .5px; }
 .hist-row { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--line); padding: 8px 10px; margin-bottom: 6px; font-size: 10px; border-radius: 4px; }
-.place-pill { font-size: 9px; padding: 2px 6px; border: 1px solid var(--amber); color: var(--amber); border-radius: 3px; }
+.place-pill { font-size: 9px; padding: 2px 6px; border: 1px solid var(--rei-blue); color: var(--rei-blue); border-radius: 3px; }
 .place-pill.lost { border-color: var(--line); color: var(--text-dim); }
 .table-wrap { position: relative; width: 240px; height: 240px; margin: 10px auto 6px; }
 .seat { position: absolute; width: 50px; transform: translate(-50%, -50%); text-align: center; transition: all 0.3s ease; }
@@ -92,42 +95,42 @@ h2.section-title::after { content: ''; flex: 1; height: 1px; background: var(--l
 .seat .name { font-size: 7.5px; color: var(--text-dim); word-break: break-word; transition: color 0.3s; }
 .seat.dead { opacity: .3; }
 .seat.dead .avatar { filter: grayscale(1); }
-.seat.turn .avatar { filter: drop-shadow(0 0 8px var(--red)) drop-shadow(0 0 12px var(--red)); animation: pulse-red 1.5s infinite; }
-.seat.turn .name { color: var(--red); font-weight: bold; }
-.seat.target .avatar { filter: drop-shadow(0 0 8px var(--amber)) drop-shadow(0 0 12px var(--amber)); animation: pulse-amber 1s infinite; }
-.seat.target .name { color: var(--amber); font-weight: bold; }
+.seat.turn .avatar { filter: drop-shadow(0 0 8px var(--rei-red)) drop-shadow(0 0 12px var(--rei-red)); animation: pulse-red 1.5s infinite; }
+.seat.turn .name { color: var(--rei-red); font-weight: bold; }
+.seat.target .avatar { filter: drop-shadow(0 0 8px var(--rei-blue)) drop-shadow(0 0 12px var(--rei-blue)); animation: pulse-amber 1s infinite; }
+.seat.target .name { color: var(--rei-blue); font-weight: bold; }
 @keyframes pulse-red { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 @keyframes pulse-amber { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-.table-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; border: 2px solid var(--line); border-radius: 50%; background: radial-gradient(circle, var(--panel-2), var(--void)); display: flex; align-items: center; justify-content: center; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+.table-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; border: 2px solid var(--rei-blue); border-radius: 50%; background: radial-gradient(circle, var(--panel-2), var(--void)); display: flex; align-items: center; justify-content: center; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
 .cyl-count { font-family: var(--font-body); font-size: 9.5px; text-align: center; line-height: 1.8; }
 .cyl-count .num { font-family: var(--font-display); font-size: 12px; margin-right: 4px; }
-.cyl-count .v-live { color: var(--red); text-shadow: 0 0 6px var(--red-glow); }
-.cyl-count .v-blank { color: var(--green); text-shadow: 0 0 6px rgba(57,255,106,.5); }
+.cyl-count .v-live { color: var(--rei-red); text-shadow: 0 0 6px var(--rei-red-glow); }
+.cyl-count .v-blank { color: var(--magi); text-shadow: 0 0 6px var(--magi-glow); }
 .cyl-total { font-size: 8px; color: var(--text-dim); letter-spacing: .5px; text-transform: uppercase; margin-top: 2px; }
-.turn-timer { text-align: center; font-size: 11px; color: var(--red); letter-spacing: 1px; margin: 6px 0 8px; font-family: var(--font-display); text-shadow: 0 0 8px var(--red-glow); animation: blink 1s infinite; }
-.target-info { text-align: center; font-size: 9px; color: var(--amber); margin-bottom: 8px; font-family: var(--font-display); text-shadow: 0 0 8px var(--amber-glow); border: 1px solid var(--amber); background: rgba(255, 204, 0, 0.08); padding: 8px; border-radius: 6px; animation: glow-amber 2s infinite alternate; }
-@keyframes glow-amber { from { box-shadow: 0 0 5px rgba(255, 204, 0, 0.2); } to { box-shadow: 0 0 15px rgba(255, 204, 0, 0.5); } }
+.turn-timer { text-align: center; font-size: 11px; color: var(--rei-red); letter-spacing: 1px; margin: 6px 0 8px; font-family: var(--font-display); text-shadow: 0 0 8px var(--rei-red-glow); animation: blink 1s infinite; }
+.target-info { text-align: center; font-size: 9px; color: var(--rei-blue); margin-bottom: 8px; font-family: var(--font-display); text-shadow: 0 0 8px var(--rei-glow); border: 1px solid var(--rei-blue); background: rgba(79, 195, 247, 0.08); padding: 8px; border-radius: 6px; animation: glow-blue 2s infinite alternate; }
+@keyframes glow-blue { from { box-shadow: 0 0 5px rgba(79, 195, 247, 0.2); } to { box-shadow: 0 0 15px rgba(79, 195, 247, 0.5); } }
 .seg-tabs { display: flex; gap: 5px; margin: 14px 0 3px; }
 .seg-tab { flex: 1; padding: 8px 3px; font-size: 8px; letter-spacing: .4px; text-transform: uppercase; border: 1px solid var(--line); background: var(--panel); color: var(--text-dim); cursor: pointer; font-family: var(--font-body); border-radius: 4px; transition: all 0.2s; }
-.seg-tab.active { color: var(--cyan); border-color: var(--cyan); background: var(--panel-2); }
+.seg-tab.active { color: var(--rei-blue); border-color: var(--rei-blue); background: var(--panel-2); }
 .acc-row { display: flex; align-items: center; gap: 10px; }
 .acc-row .acc-img { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .acc-row .acc-img img.locked { filter: grayscale(1) brightness(.35); }
 .acc-title { font-family: var(--font-display); font-size: 9.5px; margin-bottom: 5px; line-height: 1.4; }
 .acc-sub { font-size: 9px; color: var(--text-dim); line-height: 1.4; }
-.acc-sub.done { color: var(--green); }
+.acc-sub.done { color: var(--magi); }
 .acc-lock { font-size: 16px; flex-shrink: 0; }
-.log { border: 1px solid var(--line); background: #060709; padding: 8px 10px; height: 100px; overflow-y: auto; font-size: 9.5px; line-height: 1.8; color: var(--green); margin-top: 8px; border-radius: 4px; font-family: var(--font-body); }
+.log { border: 1px solid var(--line); background: #060d18; padding: 8px 10px; height: 100px; overflow-y: auto; font-size: 9.5px; line-height: 1.8; color: var(--magi); margin-top: 8px; border-radius: 4px; font-family: var(--font-body); }
 .log div { opacity: .9; }
-.log div.hit { color: var(--red); font-weight: bold; }
-.log div.sys { color: var(--cyan); }
+.log div.hit { color: var(--rei-red); font-weight: bold; }
+.log div.sys { color: var(--rei-blue); }
 .result-row { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); padding: 8px; margin-bottom: 6px; border-radius: 4px; }
-.result-row.win { border-color: var(--amber); background: rgba(255, 178, 56, .08); }
+.result-row.win { border-color: var(--rei-blue); background: rgba(79, 178, 247, .08); }
 .result-place { font-family: var(--font-display); font-size: 10px; width: 24px; color: var(--text-dim); }
-.result-row.win .result-place { color: var(--amber); }
-.back-link { font-size: 10px; color: var(--cyan); cursor: pointer; display: inline-block; margin-bottom: 10px; transition: color 0.2s; }
-.back-link:hover { color: var(--red); }
-.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--red); color: #160406; padding: 9px 14px; font-size: 10px; font-weight: 700; z-index: 30; max-width: 380px; text-align: center; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+.result-row.win .result-place { color: var(--rei-blue); }
+.back-link { font-size: 10px; color: var(--rei-blue); cursor: pointer; display: inline-block; margin-bottom: 10px; transition: color 0.2s; }
+.back-link:hover { color: var(--rei-red); }
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--rei-red); color: #fff; padding: 9px 14px; font-size: 10px; font-weight: 700; z-index: 30; max-width: 380px; text-align: center; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
 </style>
 </head>
 <body>
@@ -189,7 +192,6 @@ function setupPolling() {
   pollTimer = setInterval(() => { if (!state.modalOpen) refresh(); }, state.openBattleId ? 1000 : 3500);
 }
 
-/* ============ RENDER ============ */
 const appEl = document.getElementById('app');
 function render() {
   appEl.innerHTML = '';
@@ -207,20 +209,20 @@ function render() {
 function topbar() {
   const el = document.createElement('div'); el.className = 'topbar';
   el.innerHTML = `<div class="topbar-row">
-    <div class="brand">ПРОТОКОЛ: БАРАБАН</div>
-    <div class="status"><span class="dot"></span>ОНЛАЙН</div>
+    <div class="brand">🌙 ПРОТОКОЛ: РЕЙ</div>
+    <div class="status"><span class="dot"></span>АКТИВЕН</div>
   </div>
-  <div class="subtitle">Клубные битвы · один барабан на всех</div>`;
+  <div class="subtitle">FIRST CHILD · DUMMY SYSTEM · ONE SOUL, MANY BODIES</div>`;
   return el;
 }
 
 function navbar() {
   const items = [
-    { id: 'profile', label: 'Профиль', icon: iconProfile },
-    { id: 'pistol', label: 'Пистолет', icon: iconGun },
-    { id: 'create', label: 'Создать битву', icon: iconPlus },
+    { id: 'profile', label: 'Досье', icon: iconProfile },
+    { id: 'pistol', label: 'Барабан', icon: iconGun },
+    { id: 'create', label: 'Запуск', icon: iconPlus },
   ];
-  if (state.isOwner) items.push({ id: 'admin', label: 'Админ', icon: iconAdmin });
+  if (state.isOwner) items.push({ id: 'admin', label: 'NERV', icon: iconAdmin });
   const el = document.createElement('div'); el.className = 'nav';
   items.forEach(it => {
     const b = document.createElement('button');
@@ -272,7 +274,7 @@ function renderProfileOverview(p) {
   wrap.appendChild(stats);
   const hist = document.createElement('div'); hist.innerHTML = `<h2 class="section-title">ИСТОРИЯ</h2>`;
   wrap.appendChild(hist);
-  if (!p.history.length) { hist.insertAdjacentHTML('beforeend', `<div class="empty">Пока нет завершённых битв.<br>Загляни во вкладку «Создать битву».</div>`); }
+  if (!p.history.length) { hist.insertAdjacentHTML('beforeend', `<div class="empty">Пока нет завершённых битв.<br>"If I die, I can be replaced."</div>`); }
   else p.history.forEach(h => {
     const row = document.createElement('div'); row.className = 'hist-row';
     row.innerHTML = `<div>${h.prize}</div><div class="place-pill ${h.win ? '' : 'lost'}">${h.win ? 'Приз' : '#' + h.place}</div>`;
@@ -282,14 +284,14 @@ function renderProfileOverview(p) {
 }
 
 const AVATAR_META = {
-  default: { title: 'Стандартная Рей', required: 0 },
-  glasses: { title: 'Очки крутые', required: 10 },
-  card: { title: 'Карточка-рей', required: 100 },
+  default: { title: 'Стандартная', required: 0 },
+  glasses: { title: 'Очки', required: 10 },
+  card: { title: 'ID-карта', required: 100 },
 };
 
 function renderAccessories(p) {
   const wrap = document.createElement('div');
-  wrap.innerHTML = `<div class="hint" style="margin-bottom:10px;">Надень на аву любой разблокированный аксессуар.</div>`;
+  wrap.innerHTML = `<div class="hint" style="margin-bottom:10px;">Выбери облик. "I am me."</div>`;
   Object.entries(AVATAR_META).forEach(([key, meta]) => {
     const unlocked = meta.required === 0 || p.total >= meta.required;
     const equipped = p.avatar === key;
@@ -301,17 +303,17 @@ function renderAccessories(p) {
     row.appendChild(imgWrap);
     const info = document.createElement('div'); info.style.flex = '1';
     info.innerHTML = `<div class="acc-title">${meta.title}</div>
-      <div class="acc-sub${equipped ? ' done' : ''}">${unlocked ? (equipped ? '✅ Экипирована' : 'Разблокирована') : `Сыграй ${meta.required} игр, чтобы получить приз! (${p.total}/${meta.required})`}</div>`;
+      <div class="acc-sub${equipped ? ' done' : ''}">${unlocked ? (equipped ? '✅ Активно' : 'Доступно') : `Нужно ${meta.required} игр (${p.total}/${meta.required})`}</div>`;
     row.appendChild(info);
     if (unlocked) {
       const btn = document.createElement('button'); btn.className = 'btn' + (equipped ? '' : ' btn-cyan');
       btn.style.cssText = 'font-size:9px;padding:9px 10px;';
-      btn.textContent = equipped ? 'Надета' : 'Надеть';
+      btn.textContent = equipped ? 'Надето' : 'Надеть';
       btn.disabled = equipped;
       btn.onclick = () => act(() => api('/avatar', { method: 'POST', body: { avatar: key } }));
       row.appendChild(btn);
     } else {
-      const lock = document.createElement('div'); lock.className = 'acc-lock'; lock.textContent = '🔒';
+      const lock = document.createElement('div'); lock.className = 'acc-lock'; lock.textContent = '';
       row.appendChild(lock);
     }
     wrap.appendChild(row);
@@ -330,7 +332,7 @@ function renderAchievements(p) {
     row.appendChild(imgWrap);
     const info = document.createElement('div'); info.style.flex = '1';
     info.innerHTML = `<div class="acc-title">${a.title}</div>
-      <div class="acc-sub${a.unlocked ? ' done' : ''}">${a.unlocked ? '✅ Получено — забери в «Аксессуарах»' : `Сыграй ${a.required} игр, чтобы получить приз! (${p.total}/${a.required})`}</div>`;
+      <div class="acc-sub${a.unlocked ? ' done' : ''}">${a.unlocked ? '✅ Получено' : `Нужно ${a.required} игр (${p.total}/${a.required})`}</div>`;
     row.appendChild(info);
     wrap.appendChild(row);
   });
@@ -343,28 +345,28 @@ function renderPistol() {
     const b = state.battles.find(x => x.id === state.openBattleId);
     if (b) return renderBattleDetail(b);
   }
-  wrap.innerHTML = `<h2 class="section-title">СЕЙЧАС В БОЮ</h2>`;
+  wrap.innerHTML = `<h2 class="section-title">АКТИВНЫЕ СИНХРОНИЗАЦИИ</h2>`;
   const playing = state.battles.filter(b => b.status === 'playing');
-  if (!playing.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Ни одной активной перестрелки.<br>Дождись старта своей битвы.</div>`); }
+  if (!playing.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Нет активных битв.<br>"I mustn't run away... oh wait, that's not my line."</div>`); }
   else playing.forEach(b => wrap.appendChild(battleCard(b, true)));
-  const finTitle = document.createElement('h2'); finTitle.className = 'section-title'; finTitle.textContent = 'НЕДАВНО ЗАВЕРШЕНО';
+  const finTitle = document.createElement('h2'); finTitle.className = 'section-title'; finTitle.textContent = 'ЗАВЕРШЕНО';
   wrap.appendChild(finTitle);
   const fin = state.battles.filter(b => b.status === 'finished');
-  if (!fin.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Завершённых битв ещё нет.</div>`); }
+  if (!fin.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Пока ничего не завершено.</div>`); }
   else fin.slice(0, 5).forEach(b => wrap.appendChild(battleCard(b, true)));
   return wrap;
 }
 
 function battleCard(b, clickable) {
   const el = document.createElement('div'); el.className = 'card';
-  const statusTag = b.status === 'lobby' ? `<span class="tag">набор</span>`
-    : b.status === 'playing' ? `<span class="tag tag-live">идёт бой</span>`
-    : b.status === 'finished' ? `<span class="tag tag-red">завершено</span>`
-    : `<span class="tag">отменено</span>`;
-  el.innerHTML = `<div class="card-top"><div class="prize">🏆 ${b.prize}</div>${statusTag}</div>
+  const statusTag = b.status === 'lobby' ? `<span class="tag">ожидание</span>`
+    : b.status === 'playing' ? `<span class="tag tag-live">бой</span>`
+    : b.status === 'finished' ? `<span class="tag tag-red">конец</span>`
+    : `<span class="tag">отмена</span>`;
+  el.innerHTML = `<div class="card-top"><div class="prize"> ${b.prize}</div>${statusTag}</div>
     <div class="meta-row">
-    <div>Игроки: <b>${b.players.length}/${b.maxPlayers}</b></div>
-    <div>Победителей: <b>${b.winnersCount}</b></div>
+    <div>Пилоты: <b>${b.players.length}/${b.maxPlayers}</b></div>
+    <div>Выживших: <b>${b.winnersCount}</b></div>
     <div>Холостых: <b>${b.blanksCount}</b></div>
     </div>`;
   if (clickable && (b.status === 'playing' || b.status === 'finished')) {
@@ -376,10 +378,10 @@ function battleCard(b, clickable) {
 
 function renderBattleDetail(b) {
   const wrap = document.createElement('div');
-  const back = document.createElement('div'); back.className = 'back-link'; back.textContent = '← ко всем боям';
+  const back = document.createElement('div'); back.className = 'back-link'; back.textContent = '← назад';
   back.onclick = () => { state.openBattleId = null; setupPolling(); render(); };
   wrap.appendChild(back);
-  wrap.insertAdjacentHTML('beforeend', `<div class="prize" style="margin-bottom:8px;">🏆 ${b.prize}</div>`);
+  wrap.insertAdjacentHTML('beforeend', `<div class="prize" style="margin-bottom:8px;"> ${b.prize}</div>`);
   
   const secsLeft = (b.status === 'playing' && b.turnStartedAt)
     ? Math.max(0, Math.ceil((b.turnTimeoutMs - (Date.now() - b.turnStartedAt)) / 1000)) : null;
@@ -415,7 +417,7 @@ function renderBattleDetail(b) {
       <div class="v-blank"><span class="num">${b.blankLeft}</span>холостых</div>
       <div class="cyl-total">Всего: ${b.liveLeft + b.blankLeft}</div>
       </div>`
-    : `<div class="cyl-count" style="color:var(--amber)">БОЙ<br>ОКОНЧЕН</div>`;
+    : `<div class="cyl-count" style="color:var(--rei-blue)">КОНЕЦ<br>СВЯЗИ</div>`;
   tw.appendChild(center);
   wrap.appendChild(tw);
 
@@ -449,12 +451,12 @@ function renderBattleDetail(b) {
       const selfBtn = document.createElement('button'); selfBtn.className = 'btn btn-primary'; selfBtn.style.flex = '1';
       selfBtn.textContent = '🔫 В СЕБЯ'; selfBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-self`, { method: 'POST' }));
       const otherBtn = document.createElement('button'); otherBtn.className = 'btn btn-cyan'; otherBtn.style.flex = '1';
-      otherBtn.textContent = ' В ДРУГОГО'; otherBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-other`, { method: 'POST' }));
+      otherBtn.textContent = '🎯 В ДРУГОГО'; otherBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-other`, { method: 'POST' }));
       controls.appendChild(selfBtn); controls.appendChild(otherBtn); wrap.appendChild(controls);
     } else {
       const wait = document.createElement('div'); wait.className = 'empty'; wait.style.marginTop = '8px';
       const turnPlayer = b.players.find(p => p.user_id === b.turnUserId);
-      wait.textContent = `${turnPlayer ? turnPlayer.name : 'Игрок'} думает... (${secsLeft} с)`;
+      wait.textContent = `${turnPlayer ? turnPlayer.name : 'Пилот'} думает... (${secsLeft} с)`;
       wrap.appendChild(wait);
     }
   } else if (b.status === 'finished') {
@@ -464,7 +466,7 @@ function renderBattleDetail(b) {
       const row = document.createElement('div'); row.className = 'result-row' + (win ? ' win' : '');
       const isMe = p.user_id === ME_ID;
       row.innerHTML = `<div class="result-place">#${p.place}</div><div style="flex:1;">${p.name}${isMe ? ' (ты)' : ''}</div>
-        ${win ? '<div style="color:var(--amber);font-size:9px;">🏆 приз</div>' : ''}`;
+        ${win ? '<div style="color:var(--rei-blue);font-size:9px;">🌙 приз</div>' : ''}`;
       results.appendChild(row);
     });
     wrap.appendChild(results);
@@ -481,7 +483,7 @@ function renderCreate() {
   const wrap = document.createElement('div');
   wrap.innerHTML = `<div class="hero">
     <div class="hero-title">ОДИН<br>БАРАБАН.<br><span>ВСЕ РАВНЫ.</span></div>
-    <div class="hero-sub">Создай битву, назначь приз — барабан решит, кому он достанется.</div>
+    <div class="hero-sub">"If I die, I can be replaced." — Создай битву, назначь приз.</div>
   </div>`;
   if (state.canCreate) {
     const btn = document.createElement('button'); btn.className = 'btn btn-primary btn-full'; btn.style.marginTop = '12px';
@@ -489,13 +491,13 @@ function renderCreate() {
     wrap.appendChild(btn);
   } else {
     const locked = document.createElement('div'); locked.className = 'empty'; locked.style.marginTop = '12px';
-    locked.textContent = 'Создание битв доступно только владельцу клуба и приглашённым им людям.';
+    locked.textContent = 'Доступ только для командиров NERV.';
     wrap.appendChild(locked);
   }
-  const curTitle = document.createElement('h2'); curTitle.className = 'section-title'; curTitle.textContent = 'ТЕКУЩИЕ ИГРЫ';
+  const curTitle = document.createElement('h2'); curTitle.className = 'section-title'; curTitle.textContent = 'ТЕКУЩИЕ';
   wrap.appendChild(curTitle);
   const current = state.battles.filter(b => b.status === 'lobby' || b.status === 'playing');
-  if (!current.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Открытых битв нет.<br>Стань первым, кто зарядит барабан.</div>`); }
+  if (!current.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Нет открытых битв.<br>Стань первым пилотом.</div>`); }
   else current.forEach(b => {
     const card = battleCard(b, false);
     if (b.status === 'lobby') {
@@ -516,17 +518,17 @@ function renderCreate() {
     }
     wrap.appendChild(card);
   });
-  const yourTitle = document.createElement('h2'); yourTitle.className = 'section-title'; yourTitle.textContent = 'ВАШИ ИГРЫ';
+  const yourTitle = document.createElement('h2'); yourTitle.className = 'section-title'; yourTitle.textContent = 'ТВОИ ИГРЫ';
   wrap.appendChild(yourTitle);
   const yours = state.battles.filter(b => b.createdBy === ME_ID || b.players.find(p => p.user_id === ME_ID));
-  if (!yours.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Ты ещё не создавал и не заходил в битвы.</div>`); }
+  if (!yours.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Ты ещё не участвовал.</div>`); }
   else yours.forEach(b => {
     const card = battleCard(b, false);
     if (b.status === 'finished') {
       const me = b.players.find(p => p.user_id === ME_ID);
       const win = me && me.place <= b.winnersCount;
       const foot = document.createElement('div'); foot.style.marginTop = '8px';
-      foot.innerHTML = me ? (win ? `<span class="place-pill"> Победа, приз твой</span>` : `<span class="place-pill lost">Место #${me.place}</span>`) : '';
+      foot.innerHTML = me ? (win ? `<span class="place-pill">🌙 Победа</span>` : `<span class="place-pill lost">Место #${me.place}</span>`) : '';
       card.appendChild(foot);
     }
     if (b.status !== 'lobby') {
@@ -552,16 +554,15 @@ function resetCreateForm() {
 
 function renderAdmin() {
   const wrap = document.createElement('div');
-  wrap.innerHTML = `<h2 class="section-title">ДОСТУП К СОЗДАНИЮ БИТВ</h2>
-    <div class="hint" style="margin-bottom:12px;">Владелец клуба всегда может создавать битвы.
-    Добавь сюда Telegram ID или @username, чтобы дать это право ещё кому-то.</div>`;
+  wrap.innerHTML = `<h2 class="section-title">КОМАНДОВАНИЕ NERV</h2>
+    <div class="hint" style="margin-bottom:12px;">Командир всегда может создавать битвы. Добавь сюда Telegram ID или @username для допуска.</div>`;
   const addRow = document.createElement('div'); addRow.className = 'card';
   addRow.innerHTML = `<div class="field" style="margin-bottom:10px;">
     <label>ID или @username</label>
     <input id="adm-input" placeholder="618124780 или @nickname">
   </div>
   <div class="err" id="adm-err"></div>
-  <button class="btn btn-primary btn-full" id="adm-add">Добавить</button>`;
+  <button class="btn btn-primary btn-full" id="adm-add">ДОПУСТИТЬ</button>`;
   wrap.appendChild(addRow);
   addRow.querySelector('#adm-add').onclick = async () => {
     const val = addRow.querySelector('#adm-input').value;
@@ -571,19 +572,19 @@ function renderAdmin() {
       render();
     } catch (e) { addRow.querySelector('#adm-err').textContent = e.message; }
   };
-  const listTitle = document.createElement('h2'); listTitle.className = 'section-title'; listTitle.textContent = 'У КОГО ЕСТЬ ДОСТУП';
+  const listTitle = document.createElement('h2'); listTitle.className = 'section-title'; listTitle.textContent = 'ДОПУЩЕНЫ';
   wrap.appendChild(listTitle);
   const ownerCard = document.createElement('div'); ownerCard.className = 'card';
-  ownerCard.innerHTML = `<div class="row"><div style="flex:1;"> Владелец клуба</div><span class="tag tag-live">навсегда</span></div>`;
+  ownerCard.innerHTML = `<div class="row"><div style="flex:1;">🌙 Командир</div><span class="tag tag-live">навсегда</span></div>`;
   wrap.appendChild(ownerCard);
   if (!state.allowedList.length) {
-    wrap.appendChild(Object.assign(document.createElement('div'), { className: 'empty', textContent: 'Пока никого не добавил, кроме себя.' }));
+    wrap.appendChild(Object.assign(document.createElement('div'), { className: 'empty', textContent: 'Никого не допустил.' }));
   } else {
     state.allowedList.forEach(entry => {
       const row = document.createElement('div'); row.className = 'card';
       row.innerHTML = `<div class="row"><div style="flex:1;">${entry.label}</div></div>`;
       const rmBtn = document.createElement('button'); rmBtn.className = 'btn btn-ghost btn-full'; rmBtn.style.marginTop = '8px';
-      rmBtn.textContent = 'Убрать доступ';
+      rmBtn.textContent = 'Отозвать допуск';
       rmBtn.onclick = async () => {
         state.allowedList = await api('/admin/allowed/' + encodeURIComponent(entry.identifier), { method: 'DELETE' });
         render();
@@ -600,18 +601,18 @@ function createModal() {
   const overlay = document.createElement('div'); overlay.className = 'overlay';
   const modal = document.createElement('div'); modal.className = 'modal';
   modal.innerHTML = `<h3>НОВАЯ БИТВА</h3>
-    <div class="field"><label>Приз</label><input id="f-prize" placeholder="500⭐, промокод, Nitro..." value="${f.prize}"></div>
+    <div class="field"><label>Приз</label><input id="f-prize" placeholder="500⭐, промокод..." value="${f.prize}"></div>
     <div class="field"><label>Старт через (минут)</label><input id="f-minutes" type="number" min="1" value="${f.minutes}"></div>
-    <div class="field"><label>Макс. игроков</label><input id="f-max" type="number" min="2" value="${f.max}">
-    <div class="hint">Минимум 2 игрока.</div></div>
-    <div class="field"><label>Количество победителей</label><input id="f-winners" type="number" min="1" value="${f.winners}">
-    <div class="hint">Должно быть меньше макс. игроков.</div></div>
-    <div class="field"><label>Холостых патронов</label><input id="f-blanks" type="number" min="10" value="${f.blanks}">
-    <div class="hint">Минимум 10. Боевых будет столько же, сколько игроков.</div></div>
+    <div class="field"><label>Макс. пилотов</label><input id="f-max" type="number" min="2" value="${f.max}">
+    <div class="hint">Минимум 2.</div></div>
+    <div class="field"><label>Выживших</label><input id="f-winners" type="number" min="1" value="${f.winners}">
+    <div class="hint">Меньше макс. пилотов.</div></div>
+    <div class="field"><label>Холостых</label><input id="f-blanks" type="number" min="10" value="${f.blanks}">
+    <div class="hint">Минимум 10.</div></div>
     <div class="err" id="f-err"></div>
     <div class="btn-row">
     <button class="btn btn-ghost" style="flex:1;" id="f-cancel">Отмена</button>
-    <button class="btn btn-primary" style="flex:1;" id="f-submit">Запустить</button>
+    <button class="btn btn-primary" style="flex:1;" id="f-submit">Запуск</button>
     </div>`;
   overlay.appendChild(modal);
   const submit = async () => {
