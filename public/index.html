@@ -209,7 +209,7 @@ function render() {
 function topbar() {
   const el = document.createElement('div'); el.className = 'topbar';
   el.innerHTML = `<div class="topbar-row">
-    <div class="brand">🌙 ПРОТОКОЛ: РЕЙ</div>
+    <div class="brand">ПРОТОКОЛ: РЕЙ</div>
     <div class="status"><span class="dot"></span>АКТИВЕН</div>
   </div>
   <div class="subtitle">FIRST CHILD · DUMMY SYSTEM · ONE SOUL, MANY BODIES</div>`;
@@ -303,7 +303,7 @@ function renderAccessories(p) {
     row.appendChild(imgWrap);
     const info = document.createElement('div'); info.style.flex = '1';
     info.innerHTML = `<div class="acc-title">${meta.title}</div>
-      <div class="acc-sub${equipped ? ' done' : ''}">${unlocked ? (equipped ? '✅ Активно' : 'Доступно') : `Нужно ${meta.required} игр (${p.total}/${meta.required})`}</div>`;
+      <div class="acc-sub${equipped ? ' done' : ''}">${unlocked ? (equipped ? 'Активно' : 'Доступно') : `Нужно ${meta.required} игр (${p.total}/${meta.required})`}</div>`;
     row.appendChild(info);
     if (unlocked) {
       const btn = document.createElement('button'); btn.className = 'btn' + (equipped ? '' : ' btn-cyan');
@@ -332,7 +332,7 @@ function renderAchievements(p) {
     row.appendChild(imgWrap);
     const info = document.createElement('div'); info.style.flex = '1';
     info.innerHTML = `<div class="acc-title">${a.title}</div>
-      <div class="acc-sub${a.unlocked ? ' done' : ''}">${a.unlocked ? '✅ Получено' : `Нужно ${a.required} игр (${p.total}/${a.required})`}</div>`;
+      <div class="acc-sub${a.unlocked ? ' done' : ''}">${a.unlocked ? 'Получено' : `Нужно ${a.required} игр (${p.total}/${a.required})`}</div>`;
     row.appendChild(info);
     wrap.appendChild(row);
   });
@@ -363,7 +363,7 @@ function battleCard(b, clickable) {
     : b.status === 'playing' ? `<span class="tag tag-live">бой</span>`
     : b.status === 'finished' ? `<span class="tag tag-red">конец</span>`
     : `<span class="tag">отмена</span>`;
-  el.innerHTML = `<div class="card-top"><div class="prize"> ${b.prize}</div>${statusTag}</div>
+  el.innerHTML = `<div class="card-top"><div class="prize">${b.prize}</div>${statusTag}</div>
     <div class="meta-row">
     <div>Пилоты: <b>${b.players.length}/${b.maxPlayers}</b></div>
     <div>Выживших: <b>${b.winnersCount}</b></div>
@@ -378,10 +378,10 @@ function battleCard(b, clickable) {
 
 function renderBattleDetail(b) {
   const wrap = document.createElement('div');
-  const back = document.createElement('div'); back.className = 'back-link'; back.textContent = '← назад';
+  const back = document.createElement('div'); back.className = 'back-link'; back.textContent = '<- назад';
   back.onclick = () => { state.openBattleId = null; setupPolling(); render(); };
   wrap.appendChild(back);
-  wrap.insertAdjacentHTML('beforeend', `<div class="prize" style="margin-bottom:8px;"> ${b.prize}</div>`);
+  wrap.insertAdjacentHTML('beforeend', `<div class="prize" style="margin-bottom:8px;">${b.prize}</div>`);
   
   const secsLeft = (b.status === 'playing' && b.turnStartedAt)
     ? Math.max(0, Math.ceil((b.turnTimeoutMs - (Date.now() - b.turnStartedAt)) / 1000)) : null;
@@ -403,7 +403,7 @@ function renderBattleDetail(b) {
     seat.className = seatClass;
     seat.style.left = x + 'px'; seat.style.top = y + 'px';
     const isMe = p.user_id === ME_ID;
-    const turnTag = b.turnUserId === p.user_id ? `🔫${secsLeft != null ? ' ' + secsLeft + 'с' : ''}` : '';
+    const turnTag = b.turnUserId === p.user_id ? `X ${secsLeft != null ? ' ' + secsLeft + 'с' : ''}` : '';
     
     seat.innerHTML = `<div class="av"></div><div class="name">${p.name}${isMe ? ' (ты)' : ''}${turnTag}</div>`;
     seat.querySelector('.av').appendChild(avatarImg(p.avatar, 28));
@@ -429,7 +429,7 @@ function renderBattleDetail(b) {
   if (b.status === 'playing') {
     if (isMyTurn) {
       const timer = document.createElement('div'); timer.className = 'turn-timer';
-      timer.textContent = `⏱ ${secsLeft} СЕК — НЕ УСПЕЕШЬ, УМРЁШЬ`;
+      timer.textContent = `${secsLeft} СЕК — НЕ УСПЕЕШЬ, УМРЁШЬ`;
       wrap.appendChild(timer);
 
       if (b.targetUserId) {
@@ -437,21 +437,21 @@ function renderBattleDetail(b) {
         if (targetPlayer && targetPlayer.alive && targetPlayer.user_id !== ME_ID) {
           const targetInfo = document.createElement('div');
           targetInfo.className = 'target-info';
-          targetInfo.textContent = `🎯 ЦЕЛЬ: ${targetPlayer.name.toUpperCase()}`;
+          targetInfo.textContent = `ЦЕЛЬ: ${targetPlayer.name.toUpperCase()}`;
           wrap.appendChild(targetInfo);
         } else if (targetPlayer && targetPlayer.user_id === ME_ID) {
           const targetInfo = document.createElement('div');
           targetInfo.className = 'target-info';
-          targetInfo.textContent = `🎯 ЦЕЛЬ: ТЫ САМ`;
+          targetInfo.textContent = `ЦЕЛЬ: ТЫ САМ`;
           wrap.appendChild(targetInfo);
         }
       }
 
       const controls = document.createElement('div'); controls.style.marginTop = '0'; controls.className = 'btn-row';
       const selfBtn = document.createElement('button'); selfBtn.className = 'btn btn-primary'; selfBtn.style.flex = '1';
-      selfBtn.textContent = '🔫 В СЕБЯ'; selfBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-self`, { method: 'POST' }));
+      selfBtn.textContent = 'В СЕБЯ'; selfBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-self`, { method: 'POST' }));
       const otherBtn = document.createElement('button'); otherBtn.className = 'btn btn-cyan'; otherBtn.style.flex = '1';
-      otherBtn.textContent = '🎯 В ДРУГОГО'; otherBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-other`, { method: 'POST' }));
+      otherBtn.textContent = 'В ДРУГОГО'; otherBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-other`, { method: 'POST' }));
       controls.appendChild(selfBtn); controls.appendChild(otherBtn); wrap.appendChild(controls);
     } else {
       const wait = document.createElement('div'); wait.className = 'empty'; wait.style.marginTop = '8px';
@@ -466,7 +466,7 @@ function renderBattleDetail(b) {
       const row = document.createElement('div'); row.className = 'result-row' + (win ? ' win' : '');
       const isMe = p.user_id === ME_ID;
       row.innerHTML = `<div class="result-place">#${p.place}</div><div style="flex:1;">${p.name}${isMe ? ' (ты)' : ''}</div>
-        ${win ? '<div style="color:var(--rei-blue);font-size:9px;">🌙 приз</div>' : ''}`;
+        ${win ? '<div style="color:var(--rei-blue);font-size:9px;">приз</div>' : ''}`;
       results.appendChild(row);
     });
     wrap.appendChild(results);
@@ -528,7 +528,7 @@ function renderCreate() {
       const me = b.players.find(p => p.user_id === ME_ID);
       const win = me && me.place <= b.winnersCount;
       const foot = document.createElement('div'); foot.style.marginTop = '8px';
-      foot.innerHTML = me ? (win ? `<span class="place-pill">🌙 Победа</span>` : `<span class="place-pill lost">Место #${me.place}</span>`) : '';
+      foot.innerHTML = me ? (win ? `<span class="place-pill">Победа</span>` : `<span class="place-pill lost">Место #${me.place}</span>`) : '';
       card.appendChild(foot);
     }
     if (b.status !== 'lobby') {
@@ -575,7 +575,7 @@ function renderAdmin() {
   const listTitle = document.createElement('h2'); listTitle.className = 'section-title'; listTitle.textContent = 'ДОПУЩЕНЫ';
   wrap.appendChild(listTitle);
   const ownerCard = document.createElement('div'); ownerCard.className = 'card';
-  ownerCard.innerHTML = `<div class="row"><div style="flex:1;">🌙 Командир</div><span class="tag tag-live">навсегда</span></div>`;
+  ownerCard.innerHTML = `<div class="row"><div style="flex:1;">Командир</div><span class="tag tag-live">навсегда</span></div>`;
   wrap.appendChild(ownerCard);
   if (!state.allowedList.length) {
     wrap.appendChild(Object.assign(document.createElement('div'), { className: 'empty', textContent: 'Никого не допустил.' }));
@@ -601,7 +601,7 @@ function createModal() {
   const overlay = document.createElement('div'); overlay.className = 'overlay';
   const modal = document.createElement('div'); modal.className = 'modal';
   modal.innerHTML = `<h3>НОВАЯ БИТВА</h3>
-    <div class="field"><label>Приз</label><input id="f-prize" placeholder="500⭐, промокод..." value="${f.prize}"></div>
+    <div class="field"><label>Приз</label><input id="f-prize" placeholder="500, промокод..." value="${f.prize}"></div>
     <div class="field"><label>Старт через (минут)</label><input id="f-minutes" type="number" min="1" value="${f.minutes}"></div>
     <div class="field"><label>Макс. пилотов</label><input id="f-max" type="number" min="2" value="${f.max}">
     <div class="hint">Минимум 2.</div></div>
