@@ -2,7 +2,7 @@ const db = require('./db');
 
 const MIN_PLAYERS = 2;
 const MIN_BLANKS = 10;
-const TURN_TIMEOUT_MS = 15000; // Можно поменять на 10000, если нужно ровно 10 секунд
+const TURN_TIMEOUT_MS = 15000;
 
 const AVATARS = {
   default: { title: 'Стандартная Рей', required: 0 },
@@ -42,8 +42,17 @@ function setAvatar(user, avatarKey) {
   return { avatar: avatarKey };
 }
 
-function setTurn(battleId, userId) {
-  db.prepare('UPDATE battles SET turn_user_id=?, turn_started_at=? WHERE id=?').run(userId, now(), battleId);
+// Новая функция: устанавливает ход И выбирает новую цель
+function setTurnWithTarget(battleId, shooterUserId) {
+  const alive = db.prepare('SELECT * FROM players WHERE battle_id=? AND alive=1').all(battleId);
+  const others = alive.filter(p => String(p.user_id) !== String(shooterUserId));
+  const target = others.length > 0 ? others[Math.floor(Math.random() * others.length)] : null;
+  const targetUserId = target ? target.user_id : null;
+  
+  db.prepare('UPDATE battles SET turn_user_id=?, turn_started_at=?, target_user_id=? WHERE id=?')
+    .run(shooterUserId, now(), targetUserId, battleId);
+  
+  return targetUserId;
 }
 
 function shuffle(arr) {
@@ -119,8 +128,8 @@ function startBattle(battleId) {
   const chamber = shuffle(Array(live).fill('live').concat(Array(blanks).fill('blank')));
   const starter = pick(players);
   
-  // Заранее выбираем цель для первого стрелка
-  const others = players.filter(p => p.user_id !== starter.user_id);
+  // Выбираем цель для первого стрелка
+  const others = players.filter(p => String(p.user_id) !== String(starter.user_id));
   const target = others.length > 0 ? pick(others) : null;
   const targetUserId = target ? target.user_id : null;
 
@@ -168,14 +177,7 @@ function nextRandomShooter(battleId) {
   if (finishIfOneLeft(battleId)) return;
   const alive = getAlive(battleId);
   const next = pick(alive);
-  
-  // Заранее выбираем цель для следующего стрелка
-  const others = alive.filter(p => p.user_id !== next.user_id);
-  const target = others.length > 0 ? pick(others) : null;
-  const targetUserId = target ? target.user_id : null;
-
-  db.prepare('UPDATE battles SET turn_user_id=?, turn_started_at=?, target_user_id=? WHERE id=?')
-    .run(next.user_id, now(), targetUserId, battleId);
+  setTurnWithTarget(battleId, next.user_id);
   addLog(battleId, `Право стрелять переходит к ${next.name}.`, 'sys');
 }
 
@@ -200,7 +202,7 @@ function checkTurnTimeouts() {
 
 function assertMyTurn(battle, user) {
   if (battle.status !== 'playing') throw new Error('Бой сейчас не идёт.');
-  if (battle.turn_user_id !== user.id) throw new Error('Сейчас не твой ход.');
+  if (String(battle.turn_user_id) !== String(user.id)) throw new Error('Сейчас не твой ход.');
 }
 
 function shootSelf(user, battleId) {
@@ -211,7 +213,8 @@ function shootSelf(user, battleId) {
   const round = drawRound(battle);
   if (round === 'blank') {
     addLog(battleId, `${shooter.name} стреляет в себя — холостой. Патрон передаётся снова ${shooter.name}.`);
-    setTurn(battleId, user.id);
+    // Цель не меняется, стреляет тот же игрок
+    db.prepare('UPDATE battles SET turn_started_at=? WHERE id=?').run(now(), battleId);
   } else {
     addLog(battleId, `${shooter.name} стреляет в себя — боевой. ${shooter.name} выбывает.`, 'hit');
     const fresh = db.prepare('SELECT remaining_place FROM battles WHERE id=?').get(battleId).remaining_place;
@@ -227,16 +230,18 @@ function shootOther(user, battleId) {
   if (!battle) throw new Error('Битва не найдена.');
   assertMyTurn(battle, user);
   const shooter = db.prepare('SELECT * FROM players WHERE battle_id=? AND user_id=?').get(battleId, user.id);
-  const others = getAlive(battleId).filter(p => p.user_id !== user.id);
+  const others = getAlive(battleId).filter(p => String(p.user_id) !== String(user.id));
   if (others.length === 0) { finishIfOneLeft(battleId); return getBattle(battleId); }
   
   // Используем заранее выбранную цель, если она жива, иначе выбираем новую
-  const target = others.find(p => p.user_id === battle.target_user_id) || pick(others);
+  let target = others.find(p => String(p.user_id) === String(battle.target_user_id));
+  if (!target) target = pick(others);
   
   const round = drawRound(battle);
   if (round === 'blank') {
     addLog(battleId, `${shooter.name} стреляет в ${target.name} — холостой. Право стрелять переходит к ${target.name}.`);
-    setTurn(battleId, target.user_id);
+    // Ход переходит к цели — выбираем для неё новую цель
+    setTurnWithTarget(battleId, target.user_id);
   } else {
     addLog(battleId, `${shooter.name} стреляет в ${target.name} — боевой. ${target.name} выбывает.`, 'hit');
     const fresh = db.prepare('SELECT remaining_place FROM battles WHERE id=?').get(battleId).remaining_place;
