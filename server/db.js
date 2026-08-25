@@ -1,10 +1,9 @@
 const Database = require('better-sqlite3');
-const path = require('path');
-
-const db = new Database(path.join(__dirname, '..', 'data.sqlite'));
-db.pragma('journal_mode = WAL');
+const db = new Database('data.sqlite');
 
 db.exec(`
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE IF NOT EXISTS battles (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   prize TEXT NOT NULL,
@@ -12,13 +11,14 @@ CREATE TABLE IF NOT EXISTS battles (
   max_players INTEGER NOT NULL,
   winners_count INTEGER NOT NULL,
   blanks_count INTEGER NOT NULL,
-  status TEXT NOT NULL DEFAULT 'lobby', -- lobby | playing | finished | cancelled
+  status TEXT NOT NULL DEFAULT 'lobby',
   created_by TEXT NOT NULL,
   created_by_name TEXT NOT NULL,
   turn_user_id TEXT,
+  target_user_id TEXT,
   remaining_place INTEGER,
-  chamber TEXT, -- JSON array: ["live","blank",...]
-  ends_at INTEGER NOT NULL, -- когда лобби закрывается / когда стартует бой
+  chamber TEXT,
+  ends_at INTEGER NOT NULL,
   created_at INTEGER NOT NULL
 );
 
@@ -48,20 +48,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS allowed_creators (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  identifier TEXT NOT NULL UNIQUE, -- telegram id либо username (без @, в нижнем регистре)
-  label TEXT NOT NULL,             -- как ввёл админ, для отображения в списке
+  identifier TEXT NOT NULL UNIQUE,
+  label TEXT NOT NULL,
   added_at INTEGER NOT NULL
 );
-
-CREATE INDEX IF NOT EXISTS idx_players_battle ON players(battle_id);
-CREATE INDEX IF NOT EXISTS idx_logs_battle ON logs(battle_id);
 `);
-
-// Безопасная миграция для уже существующих баз (созданных до появления таймера хода):
-// добавляем колонку, только если её ещё нет.
-const battleCols = db.prepare("PRAGMA table_info(battles)").all().map(c => c.name);
-if (!battleCols.includes('turn_started_at')) {
-  db.exec('ALTER TABLE battles ADD COLUMN turn_started_at INTEGER');
-}
 
 module.exports = db;
