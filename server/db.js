@@ -55,3 +55,5 @@ CREATE TABLE IF NOT EXISTS allowed_creators (
 `);
 
 module.exports = db;
+// Добавляем колонку, если её ещё нет (безопасно для существующей базы)
+db.exec(`ALTER TABLE battles ADD COLUMN target_user_id TEXT;`);
