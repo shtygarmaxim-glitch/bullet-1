@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS battles (
   remaining_place INTEGER,
   chamber TEXT,
   ends_at INTEGER NOT NULL,
-  created_at INTEGER NOT NULL
+  created_at INTEGER NOT NULL,
+  turn_started_at INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS players (
@@ -54,17 +55,28 @@ CREATE TABLE IF NOT EXISTS allowed_creators (
 );
 `);
 
-// Проверяем и добавляем колонку target_user_id если нужно
+// Миграции: добавляем отсутствующие колонки
 try {
   const tableInfo = db.pragma("table_info(battles)");
-  const hasTargetColumn = tableInfo.some(col => col.name === 'target_user_id');
+  const columns = tableInfo.map(col => col.name);
   
-  if (!hasTargetColumn) {
-    db.exec(`ALTER TABLE battles ADD COLUMN target_user_id TEXT;`);
-    console.log('✅ Колонка target_user_id добавлена');
+  if (!columns.includes('turn_started_at')) {
+    db.exec(`ALTER TABLE battles ADD COLUMN turn_started_at INTEGER;`);
+    console.log('✅ Добавлена колонка turn_started_at');
   }
+  
+  if (!columns.includes('target_user_id')) {
+    db.exec(`ALTER TABLE battles ADD COLUMN target_user_id TEXT;`);
+    console.log('✅ Добавлена колонка target_user_id');
+  }
+  
+  if (!columns.includes('remaining_place')) {
+    db.exec(`ALTER TABLE battles ADD COLUMN remaining_place INTEGER;`);
+    console.log('✅ Добавлена колонка remaining_place');
+  }
+  
 } catch (e) {
-  console.error('⚠️  Ошибка при проверке колонки:', e.message);
+  console.error('⚠️  Ошибка при миграции базы данных:', e.message);
 }
 
 module.exports = db;
