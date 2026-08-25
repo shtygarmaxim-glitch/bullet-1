@@ -2,10 +2,8 @@ const db = require('./db');
 
 const MIN_PLAYERS = 2;
 const MIN_BLANKS = 10;
-const TURN_TIMEOUT_MS = 15000;
+const TURN_TIMEOUT_MS = 15000; // Можно поменять на 10000, если нужно ровно 10 секунд
 
-// Аватарки-аксессуары: ключ -> сколько сыгранных (завершённых) битв нужно, чтобы разблокировать.
-// 'default' доступна всем сразу. Файлы лежат в public/avatars/<key>.png
 const AVATARS = {
   default: { title: 'Стандартная Рей', required: 0 },
   glasses: { title: 'Очки крутые', required: 10 },
@@ -120,14 +118,19 @@ function startBattle(battleId) {
   const blanks = battle.blanks_count;
   const chamber = shuffle(Array(live).fill('live').concat(Array(blanks).fill('blank')));
   const starter = pick(players);
+  
+  // Заранее выбираем цель для первого стрелка
+  const others = players.filter(p => p.user_id !== starter.user_id);
+  const target = others.length > 0 ? pick(others) : null;
+  const targetUserId = target ? target.user_id : null;
+
   db.prepare(`
-    UPDATE battles SET status='playing', chamber=?, turn_user_id=?, turn_started_at=?, remaining_place=? WHERE id=?
-  `).run(JSON.stringify(chamber), starter.user_id, now(), players.length, battleId);
+    UPDATE battles SET status='playing', chamber=?, turn_user_id=?, target_user_id=?, turn_started_at=?, remaining_place=? WHERE id=?
+  `).run(JSON.stringify(chamber), starter.user_id, targetUserId, now(), players.length, battleId);
   addLog(battleId, `Барабан заряжен: ${live} боевых / ${blanks} холостых.`, 'sys');
   addLog(battleId, `Право стрелять получает ${starter.name}.`, 'sys');
 }
 
-// Разрешает все просроченные лобби (вызывается по таймеру)
 function resolveExpiredLobbies() {
   const expired = db.prepare("SELECT id FROM battles WHERE status='lobby' AND ends_at<=?").all(now());
   for (const row of expired) startBattle(row.id);
@@ -154,7 +157,7 @@ function finishIfOneLeft(battleId) {
   if (alive.length <= 1) {
     if (alive.length === 1) db.prepare('UPDATE players SET place=1 WHERE battle_id=? AND user_id=?')
       .run(battleId, alive[0].user_id);
-    db.prepare("UPDATE battles SET status='finished', turn_user_id=NULL WHERE id=?").run(battleId);
+    db.prepare("UPDATE battles SET status='finished', turn_user_id=NULL, target_user_id=NULL WHERE id=?").run(battleId);
     addLog(battleId, 'Бой завершён.', 'sys');
     return true;
   }
@@ -165,11 +168,17 @@ function nextRandomShooter(battleId) {
   if (finishIfOneLeft(battleId)) return;
   const alive = getAlive(battleId);
   const next = pick(alive);
-  setTurn(battleId, next.user_id);
+  
+  // Заранее выбираем цель для следующего стрелка
+  const others = alive.filter(p => p.user_id !== next.user_id);
+  const target = others.length > 0 ? pick(others) : null;
+  const targetUserId = target ? target.user_id : null;
+
+  db.prepare('UPDATE battles SET turn_user_id=?, turn_started_at=?, target_user_id=? WHERE id=?')
+    .run(next.user_id, now(), targetUserId, battleId);
   addLog(battleId, `Право стрелять переходит к ${next.name}.`, 'sys');
 }
 
-// Вызывается по таймеру: если игрок держит пистолет дольше 15 секунд, он выбывает.
 function checkTurnTimeouts() {
   const cutoff = now() - TURN_TIMEOUT_MS;
   const stuck = db.prepare(`
@@ -180,7 +189,8 @@ function checkTurnTimeouts() {
     const shooter = db.prepare('SELECT * FROM players WHERE battle_id=? AND user_id=? AND alive=1')
       .get(battle.id, battle.turn_user_id);
     if (!shooter) continue;
-    addLog(battle.id, `${shooter.name} не успел выстрелить за 15 секунд — выбывает.`, 'hit');
+    const seconds = Math.round(TURN_TIMEOUT_MS / 1000);
+    addLog(battle.id, `${shooter.name} не успел выстрелить за ${seconds} секунд — умер.`, 'hit');
     const fresh = db.prepare('SELECT remaining_place FROM battles WHERE id=?').get(battle.id).remaining_place;
     eliminate(battle.id, shooter.user_id, fresh);
     db.prepare('UPDATE battles SET remaining_place=? WHERE id=?').run(fresh - 1, battle.id);
@@ -219,7 +229,10 @@ function shootOther(user, battleId) {
   const shooter = db.prepare('SELECT * FROM players WHERE battle_id=? AND user_id=?').get(battleId, user.id);
   const others = getAlive(battleId).filter(p => p.user_id !== user.id);
   if (others.length === 0) { finishIfOneLeft(battleId); return getBattle(battleId); }
-  const target = pick(others);
+  
+  // Используем заранее выбранную цель, если она жива, иначе выбираем новую
+  const target = others.find(p => p.user_id === battle.target_user_id) || pick(others);
+  
   const round = drawRound(battle);
   if (round === 'blank') {
     addLog(battleId, `${shooter.name} стреляет в ${target.name} — холостой. Право стрелять переходит к ${target.name}.`);
@@ -255,6 +268,7 @@ function getBattle(battleId) {
     createdBy: battle.created_by,
     createdByName: battle.created_by_name,
     turnUserId: battle.turn_user_id,
+    targetUserId: battle.target_user_id,
     turnStartedAt: battle.turn_started_at,
     turnTimeoutMs: TURN_TIMEOUT_MS,
     endsAt: battle.ends_at,
