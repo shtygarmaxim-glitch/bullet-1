@@ -54,6 +54,17 @@ CREATE TABLE IF NOT EXISTS allowed_creators (
 );
 `);
 
+// Добавляем колонку target_user_id, если она ещё не существует
+try {
+  db.exec(`ALTER TABLE battles ADD COLUMN target_user_id TEXT;`);
+  console.log('✅ Колонка target_user_id добавлена в battles');
+} catch (e) {
+  // Игнорируем ошибку, если колонка уже существует
+  if (!e.message.includes('duplicate column')) {
+    console.error('Ошибка при добавлении колонки:', e.message);
+  } else {
+    console.log('✅ Колонка target_user_id уже существует');
+  }
+}
+
 module.exports = db;
-// Добавляем колонку, если её ещё нет (безопасно для существующей базы)
-db.exec(`ALTER TABLE battles ADD COLUMN target_user_id TEXT;`);
