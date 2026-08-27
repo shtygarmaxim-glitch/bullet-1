@@ -31,6 +31,8 @@ function buildRouter() {
         maxPlayers: Number(req.body.maxPlayers),
         winnersCount: Number(req.body.winnersCount),
         blanksCount: Number(req.body.blanksCount),
+        anomalyMadness: req.body.anomalyMadness === true || req.body.anomalyMadness === 'true',
+        anomalyExecutioner: req.body.anomalyExecutioner === true || req.body.anomalyExecutioner === 'true',
       });
       res.json(b);
     } catch (e) {
@@ -57,6 +59,22 @@ function buildRouter() {
   router.post('/battles/:id/shoot-other', (req, res) => {
     try {
       res.json(game.shootOther(req.user, Number(req.params.id)));
+    } catch (e) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
+  router.post('/battles/:id/shoot-madness', (req, res) => {
+    try {
+      res.json(game.shootMadness(req.user, Number(req.params.id)));
+    } catch (e) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
+  router.post('/battles/:id/execute', (req, res) => {
+    try {
+      res.json(game.executeTarget(req.user, Number(req.params.id), req.body.targetUserId));
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
