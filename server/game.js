@@ -5,9 +5,9 @@ const MIN_BLANKS = 10;
 const TURN_TIMEOUT_MS = 15000;
 
 const AVATARS = {
-  default: { title: 'Стандартная Рей', required: 0 },
-  glasses: { title: 'Очки крутые', required: 10 },
-  card:    { title: 'Карточка-рей', required: 100 },
+  default: { title: 'Стандартная', required: 0 },
+  glasses: { title: 'Очки', required: 10 },
+  card:    { title: 'ID-карта', required: 100 },
 };
 
 function now() { return Date.now(); }
@@ -42,38 +42,16 @@ function setAvatar(user, avatarKey) {
   return { avatar: avatarKey };
 }
 
+// Устанавливает ход И выбирает новую цель (не равную стрелку)
 function setTurnWithTarget(battleId, shooterUserId) {
-  const battle = db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
-  let pending = battle.pending_anomalies ? JSON.parse(battle.pending_anomalies) : [];
-  let currentAnomaly = null;
-  let executionerTargets = null;
-
-  if (pending.length > 0) {
-    currentAnomaly = pending.shift();
-    db.prepare('UPDATE battles SET pending_anomalies=? WHERE id=?').run(JSON.stringify(pending), battleId);
-    
-    const shooter = db.prepare('SELECT name FROM players WHERE battle_id=? AND user_id=?').get(battleId, shooterUserId);
-    if (currentAnomaly === 'madness') {
-      addLog(battleId, `🌀 АНОМАЛИЯ: БЕЗУМИЕ! ${shooter.name} теряет контроль. Твой выбор ничего не решает.`, 'anomaly');
-    } else if (currentAnomaly === 'executioner') {
-      const alive = db.prepare('SELECT * FROM players WHERE battle_id=? AND alive=1 AND user_id!=?').all(battleId, shooterUserId);
-      const shuffled = shuffle(alive);
-      const targets = shuffled.slice(0, 5).map(p => p.user_id);
-      executionerTargets = JSON.stringify(targets);
-      const targetNames = shuffled.slice(0, 5).map(p => p.name).join(', ');
-      addLog(battleId, `🌀 АНОМАЛИЯ: ВЫБОР ПАЛАЧА! ${shooter.name} выбирает одну из 5 жертв: ${targetNames}`, 'anomaly');
-    }
-  }
-
   const alive = db.prepare('SELECT * FROM players WHERE battle_id=? AND alive=1').all(battleId);
   const others = alive.filter(p => String(p.user_id) !== String(shooterUserId));
   const target = others.length > 0 ? others[Math.floor(Math.random() * others.length)] : null;
   const targetUserId = target ? target.user_id : null;
-
-  db.prepare(`
-    UPDATE battles SET turn_user_id=?, turn_started_at=?, target_user_id=?, current_anomaly=?, executioner_targets=? WHERE id=?
-  `).run(shooterUserId, now(), targetUserId, currentAnomaly, executionerTargets, battleId);
-
+  
+  db.prepare('UPDATE battles SET turn_user_id=?, turn_started_at=?, target_user_id=? WHERE id=?')
+    .run(shooterUserId, now(), targetUserId, battleId);
+  
   return targetUserId;
 }
 
@@ -92,7 +70,7 @@ function addLog(battleId, text, cls = '') {
     .run(battleId, text, cls, now());
 }
 
-function validateCreateInput({ prize, minutes, maxPlayers, winnersCount, blanksCount, anomalyMadness, anomalyExecutioner }) {
+function validateCreateInput({ prize, minutes, maxPlayers, winnersCount, blanksCount }) {
   if (!prize || !String(prize).trim()) return 'Укажи приз.';
   if (!Number.isFinite(minutes) || minutes < 1) return 'Минимум 1 минута до старта.';
   if (!Number.isFinite(maxPlayers) || maxPlayers < MIN_PLAYERS) return `Минимум ${MIN_PLAYERS} игрока.`;
@@ -106,21 +84,12 @@ function createBattle(user, input) {
   const err = validateCreateInput(input);
   if (err) throw new Error(err);
   const endsAt = now() + input.minutes * 60000;
-  
-  const pending = [];
-  if (input.anomalyMadness) pending.push('madness');
-  if (input.anomalyExecutioner) pending.push('executioner');
-
   const info = db.prepare(`
     INSERT INTO battles (prize, minutes, max_players, winners_count, blanks_count, status,
-      created_by, created_by_name, ends_at, created_at, anomaly_madness, anomaly_executioner, pending_anomalies)
-    VALUES (?,?,?,?,?, 'lobby', ?,?,?,?, ?, ?, ?)
+      created_by, created_by_name, ends_at, created_at)
+    VALUES (?,?,?,?,?, 'lobby', ?,?,?,?)
   `).run(input.prize.trim(), input.minutes, input.maxPlayers, input.winnersCount, input.blanksCount,
-    user.id, user.name, endsAt, now(),
-    input.anomalyMadness ? 1 : 0,
-    input.anomalyExecutioner ? 1 : 0,
-    JSON.stringify(pending)
-  );
+    user.id, user.name, endsAt, now());
   const battleId = info.lastInsertRowid;
   ensureUser(user);
   db.prepare('INSERT INTO players (battle_id, user_id, name, join_order) VALUES (?,?,?,0)')
@@ -159,32 +128,14 @@ function startBattle(battleId) {
   const chamber = shuffle(Array(live).fill('live').concat(Array(blanks).fill('blank')));
   const starter = pick(players);
   
+  // Выбираем цель для первого стрелка
   const others = players.filter(p => String(p.user_id) !== String(starter.user_id));
   const target = others.length > 0 ? pick(others) : null;
   const targetUserId = target ? target.user_id : null;
 
-  let pending = battle.pending_anomalies ? JSON.parse(battle.pending_anomalies) : [];
-  let currentAnomaly = null;
-  let executionerTargets = null;
-
-  if (pending.length > 0) {
-    currentAnomaly = pending.shift();
-    if (currentAnomaly === 'madness') {
-      addLog(battleId, `🌀 АНОМАЛИЯ: БЕЗУМИЕ! ${starter.name} теряет контроль. Твой выбор ничего не решает.`, 'anomaly');
-    } else if (currentAnomaly === 'executioner') {
-      const alive = players.filter(p => String(p.user_id) !== String(starter.user_id));
-      const shuffled = shuffle(alive);
-      const targets = shuffled.slice(0, 5).map(p => p.user_id);
-      executionerTargets = JSON.stringify(targets);
-      const targetNames = shuffled.slice(0, 5).map(p => p.name).join(', ');
-      addLog(battleId, `🌀 АНОМАЛИЯ: ВЫБОР ПАЛАЧА! ${starter.name} выбирает одну из 5 жертв: ${targetNames}`, 'anomaly');
-    }
-  }
-
   db.prepare(`
-    UPDATE battles SET status='playing', chamber=?, turn_user_id=?, target_user_id=?, turn_started_at=?, remaining_place=?, pending_anomalies=?, current_anomaly=?, executioner_targets=? WHERE id=?
-  `).run(JSON.stringify(chamber), starter.user_id, targetUserId, now(), players.length, JSON.stringify(pending), currentAnomaly, executionerTargets, battleId);
-  
+    UPDATE battles SET status='playing', chamber=?, turn_user_id=?, target_user_id=?, turn_started_at=?, remaining_place=? WHERE id=?
+  `).run(JSON.stringify(chamber), starter.user_id, targetUserId, now(), players.length, battleId);
   addLog(battleId, `Барабан заряжен: ${live} боевых / ${blanks} холостых.`, 'sys');
   addLog(battleId, `Право стрелять получает ${starter.name}.`, 'sys');
 }
@@ -215,7 +166,7 @@ function finishIfOneLeft(battleId) {
   if (alive.length <= 1) {
     if (alive.length === 1) db.prepare('UPDATE players SET place=1 WHERE battle_id=? AND user_id=?')
       .run(battleId, alive[0].user_id);
-    db.prepare("UPDATE battles SET status='finished', turn_user_id=NULL, target_user_id=NULL, current_anomaly=NULL, executioner_targets=NULL WHERE id=?").run(battleId);
+    db.prepare("UPDATE battles SET status='finished', turn_user_id=NULL, target_user_id=NULL WHERE id=?").run(battleId);
     addLog(battleId, 'Бой завершён.', 'sys');
     return true;
   }
@@ -254,42 +205,23 @@ function assertMyTurn(battle, user) {
   if (String(battle.turn_user_id) !== String(user.id)) throw new Error('Сейчас не твой ход.');
 }
 
-function resolveShot(battleId, shooterUserId, targetUserId, shooterName, targetName) {
-  const battle = db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
-  const round = drawRound(battle);
-  
-  if (String(shooterUserId) === String(targetUserId)) {
-    if (round === 'blank') {
-      addLog(battleId, `${shooterName} стреляет в себя — холостой. Патрон передаётся снова ${shooterName}.`);
-      db.prepare('UPDATE battles SET turn_started_at=? WHERE id=?').run(now(), battleId);
-    } else {
-      addLog(battleId, `${shooterName} стреляет в себя — боевой. ${shooterName} выбывает.`, 'hit');
-      const fresh = db.prepare('SELECT remaining_place FROM battles WHERE id=?').get(battleId).remaining_place;
-      eliminate(battleId, shooterUserId, fresh);
-      db.prepare('UPDATE battles SET remaining_place=? WHERE id=?').run(fresh - 1, battleId);
-      nextRandomShooter(battleId);
-    }
-  } else {
-    if (round === 'blank') {
-      addLog(battleId, `${shooterName} стреляет в ${targetName} — холостой. Право стрелять переходит к ${targetName}.`);
-      setTurnWithTarget(battleId, targetUserId);
-    } else {
-      addLog(battleId, `${shooterName} стреляет в ${targetName} — боевой. ${targetName} выбывает.`, 'hit');
-      const fresh = db.prepare('SELECT remaining_place FROM battles WHERE id=?').get(battleId).remaining_place;
-      eliminate(battleId, targetUserId, fresh);
-      db.prepare('UPDATE battles SET remaining_place=? WHERE id=?').run(fresh - 1, battleId);
-      nextRandomShooter(battleId);
-    }
-  }
-}
-
 function shootSelf(user, battleId) {
   const battle = db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
   if (!battle) throw new Error('Битва не найдена.');
   assertMyTurn(battle, user);
-  if (battle.current_anomaly) throw new Error('Сейчас активна аномалия, используй специальное действие.');
   const shooter = db.prepare('SELECT * FROM players WHERE battle_id=? AND user_id=?').get(battleId, user.id);
-  resolveShot(battleId, user.id, user.id, shooter.name, shooter.name);
+  const round = drawRound(battle);
+  if (round === 'blank') {
+    addLog(battleId, `${shooter.name} стреляет в себя — холостой. Патрон передаётся снова ${shooter.name}.`);
+    // Цель не меняется, стреляет тот же игрок, просто сбрасываем таймер
+    db.prepare('UPDATE battles SET turn_started_at=? WHERE id=?').run(now(), battleId);
+  } else {
+    addLog(battleId, `${shooter.name} стреляет в себя — боевой. ${shooter.name} выбывает.`, 'hit');
+    const fresh = db.prepare('SELECT remaining_place FROM battles WHERE id=?').get(battleId).remaining_place;
+    eliminate(battleId, user.id, fresh);
+    db.prepare('UPDATE battles SET remaining_place=? WHERE id=?').run(fresh - 1, battleId);
+    nextRandomShooter(battleId);
+  }
   return getBattle(battleId);
 }
 
@@ -297,65 +229,26 @@ function shootOther(user, battleId) {
   const battle = db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
   if (!battle) throw new Error('Битва не найдена.');
   assertMyTurn(battle, user);
-  if (battle.current_anomaly) throw new Error('Сейчас активна аномалия, используй специальное действие.');
   const shooter = db.prepare('SELECT * FROM players WHERE battle_id=? AND user_id=?').get(battleId, user.id);
   const others = getAlive(battleId).filter(p => String(p.user_id) !== String(user.id));
   if (others.length === 0) { finishIfOneLeft(battleId); return getBattle(battleId); }
   
+  // Используем заранее выбранную цель, если она жива, иначе выбираем новую
   let target = others.find(p => String(p.user_id) === String(battle.target_user_id));
   if (!target) target = pick(others);
   
-  resolveShot(battleId, user.id, target.user_id, shooter.name, target.name);
-  return getBattle(battleId);
-}
-
-function shootMadness(user, battleId) {
-  const battle = db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
-  if (!battle) throw new Error('Битва не найдена.');
-  assertMyTurn(battle, user);
-  if (battle.current_anomaly !== 'madness') throw new Error('Сейчас не аномалия БЕЗУМИЕ.');
-
-  const shooter = db.prepare('SELECT * FROM players WHERE battle_id=? AND user_id=?').get(battleId, user.id);
-  const alive = getAlive(battleId);
-  const others = alive.filter(p => String(p.user_id) !== String(user.id));
-  
-  const shootSelfChoice = Math.random() < 0.5;
-  
-  if (shootSelfChoice || others.length === 0) {
-    addLog(battleId, `🌀 БЕЗУМИЕ: ${shooter.name} случайно направляет оружие на себя!`, 'anomaly');
-    resolveShot(battleId, user.id, user.id, shooter.name, shooter.name);
+  const round = drawRound(battle);
+  if (round === 'blank') {
+    addLog(battleId, `${shooter.name} стреляет в ${target.name} — холостой. Право стрелять переходит к ${target.name}.`, 'hit');
+    // Ход переходит к цели — выбираем для неё новую цель
+    setTurnWithTarget(battleId, target.user_id);
   } else {
-    const target = pick(others);
-    addLog(battleId, `🌀 БЕЗУМИЕ: ${shooter.name} случайно направляет оружие на ${target.name}!`, 'anomaly');
-    resolveShot(battleId, user.id, target.user_id, shooter.name, target.name);
+    addLog(battleId, `${shooter.name} стреляет в ${target.name} — боевой. ${target.name} выбывает.`, 'hit');
+    const fresh = db.prepare('SELECT remaining_place FROM battles WHERE id=?').get(battleId).remaining_place;
+    eliminate(battleId, target.user_id, fresh);
+    db.prepare('UPDATE battles SET remaining_place=? WHERE id=?').run(fresh - 1, battleId);
+    nextRandomShooter(battleId);
   }
-  
-  db.prepare('UPDATE battles SET current_anomaly=NULL, executioner_targets=NULL WHERE id=?').run(battleId);
-  return getBattle(battleId);
-}
-
-function executeTarget(user, battleId, targetUserId) {
-  const battle = db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
-  if (!battle) throw new Error('Битва не найдена.');
-  assertMyTurn(battle, user);
-  if (battle.current_anomaly !== 'executioner') throw new Error('Сейчас не аномалия ВЫБОР ПАЛАЧА.');
-  
-  const targets = JSON.parse(battle.executioner_targets || '[]');
-  if (!targets.includes(String(targetUserId))) {
-    throw new Error('Этой цели нет в списке.');
-  }
-  
-  const shooter = db.prepare('SELECT * FROM players WHERE battle_id=? AND user_id=?').get(battleId, user.id);
-  const target = db.prepare('SELECT * FROM players WHERE battle_id=? AND user_id=?').get(battleId, targetUserId);
-  
-  addLog(battleId, `🌀 ВЫБОР ПАЛАЧА: ${shooter.name} мгновенно убивает ${target.name}!`, 'hit');
-  const fresh = db.prepare('SELECT remaining_place FROM battles WHERE id=?').get(battleId).remaining_place;
-  eliminate(battleId, targetUserId, fresh);
-  db.prepare('UPDATE battles SET remaining_place=? WHERE id=?').run(fresh - 1, battleId);
-  
-  db.prepare('UPDATE battles SET current_anomaly=NULL, executioner_targets=NULL WHERE id=?').run(battleId);
-  
-  nextRandomShooter(battleId);
   return getBattle(battleId);
 }
 
@@ -369,13 +262,6 @@ function getBattle(battleId) {
   `).all(battleId);
   const logs = db.prepare('SELECT text, cls FROM logs WHERE battle_id=? ORDER BY id ASC').all(battleId);
   const chamber = battle.chamber ? JSON.parse(battle.chamber) : [];
-  
-  let executionerTargets = [];
-  if (battle.current_anomaly === 'executioner' && battle.executioner_targets) {
-    const targetIds = JSON.parse(battle.executioner_targets);
-    executionerTargets = players.filter(p => targetIds.includes(String(p.user_id))).map(p => ({ user_id: p.user_id, name: p.name }));
-  }
-
   return {
     id: battle.id,
     prize: battle.prize,
@@ -395,10 +281,6 @@ function getBattle(battleId) {
     blankLeft: chamber.filter(c => c === 'blank').length,
     players,
     log: logs,
-    currentAnomaly: battle.current_anomaly,
-    executionerTargets,
-    anomalyMadness: battle.anomaly_madness,
-    anomalyExecutioner: battle.anomaly_executioner,
   };
 }
 
@@ -422,7 +304,6 @@ function getProfile(user) {
       id: key, image: key, title: meta.title, required: meta.required, unlocked: total >= meta.required,
     }));
   return {
-    userId: user.id,
     name: user.name,
     avatar: getUserAvatar(user.id),
     wins,
@@ -436,6 +317,5 @@ function getProfile(user) {
 module.exports = {
   MIN_PLAYERS, MIN_BLANKS, AVATARS,
   createBattle, joinBattle, resolveExpiredLobbies, checkTurnTimeouts,
-  shootSelf, shootOther, shootMadness, executeTarget,
-  getBattle, listBattles, getProfile, setAvatar,
+  shootSelf, shootOther, getBattle, listBattles, getProfile, setAvatar,
 };
