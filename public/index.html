@@ -19,524 +19,461 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: #000; font-family: var(--font-body); color: var(--text); }
-.app { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--void);
-  background-image: 
-    linear-gradient(rgba(79, 195, 247, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79, 195, 247, 0.04) 1px, transparent 1px);
-  background-size: 24px 24px; background-position: -1px -1px; position: relative;
-  display: flex; flex-direction: column; }
-.topbar { padding: 12px 16px 10px; border-bottom: 2px solid var(--rei-blue);
-  background: linear-gradient(180deg, #0d1f3a 0%, rgba(10,22,40,0) 100%); position: sticky; top: 0; z-index: 5; }
-.topbar-row { display: flex; align-items: center; justify-content: space-between; }
-.brand { font-family: var(--font-display); font-size: 10px; letter-spacing: 1px; color: var(--rei-blue); text-shadow: 0 0 8px var(--rei-glow); }
-.status { display: flex; align-items: center; gap: 6px; font-size: 9px; color: var(--magi); }
-.dot { width: 6px; height: 6px; background: var(--magi); box-shadow: 0 0 6px var(--magi); animation: blink 1.4s infinite; }
-@keyframes blink { 0%, 100% { opacity: 1 } 50% { opacity: .2 } }
-.subtitle { margin-top: 4px; font-size: 8px; color: var(--text-dim); letter-spacing: .5px; font-style: italic; }
-.content { flex: 1; padding: 12px 12px 90px; overflow-y: auto; }
-h2.section-title { font-family: var(--font-display); font-size: 10px; color: var(--rei-blue); letter-spacing: 1px;
-  margin: 16px 0 8px; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 6px var(--rei-glow); }
-h2.section-title:first-child { margin-top: 0; }
-h2.section-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
-.hero { border: 2px solid var(--rei-blue); background: var(--panel); padding: 14px 12px; position: relative; overflow: hidden; margin-bottom: 6px; border-radius: 4px; }
-.hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, rgba(79,195,247,.06) 0 2px, transparent 2px 8px); }
-.hero-title { font-family: var(--font-display); font-size: 12px; line-height: 1.6; color: var(--text); position: relative; }
-.hero-title span { color: var(--rei-red); text-shadow: 0 0 8px var(--rei-red-glow); }
-.hero-sub { margin-top: 8px; font-size: 9px; color: var(--text-dim); position: relative; font-style: italic; }
-.btn { font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: .5px; padding: 10px 12px;
-  border: 2px solid var(--line); background: var(--panel-2); color: var(--text); cursor: pointer; text-transform: uppercase; text-align: center;
-  transition: all 0.2s ease; border-radius: 4px; }
-.btn:active { transform: translateY(1px); }
-.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-.btn-primary { background: var(--rei-red); border-color: var(--rei-red); color: #fff; }
-.btn-primary:hover:not(:disabled) { box-shadow: 0 0 15px var(--rei-red-glow); }
-.btn-cyan { border-color: var(--rei-blue); color: var(--rei-blue); }
-.btn-cyan:hover:not(:disabled) { box-shadow: 0 0 15px var(--rei-glow); }
-.btn-full { width: 100%; }
-.btn-row { display: flex; gap: 6px; }
-.btn:disabled { opacity: .35; cursor: not-allowed; }
-.card { border: 1px solid var(--line); background: var(--panel); padding: 10px; margin-bottom: 8px; border-radius: 4px; transition: border-color 0.2s; }
-.card:hover { border-color: var(--rei-blue); }
-.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.prize { font-family: var(--font-display); font-size: 10px; color: var(--rei-blue); line-height: 1.6; text-shadow: 0 0 6px var(--rei-glow); }
-.tag { font-size: 9px; padding: 2px 5px; border: 1px solid var(--line); color: var(--text-dim); letter-spacing: .5px; text-transform: uppercase; border-radius: 3px; }
-.tag-live { color: var(--magi); border-color: var(--magi); }
-.tag-red { color: var(--rei-red); border-color: var(--rei-red); }
-.meta-row { display: flex; gap: 10px; margin-top: 8px; font-size: 9.5px; color: var(--text-dim); flex-wrap: wrap; }
-.meta-row b { color: var(--text); }
-.empty { border: 1px dashed var(--line); padding: 16px 12px; text-align: center; color: var(--text-dim); font-size: 10px; border-radius: 4px; font-style: italic; }
-.overlay { position: absolute; inset: 0; background: rgba(10,22,40,.92); z-index: 20; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
-.modal { width: 100%; max-width: 430px; background: var(--panel); border-top: 2px solid var(--rei-red); padding: 16px 14px 18px; max-height: 88vh; overflow-y: auto; border-radius: 8px 8px 0 0; }
-.modal h3 { font-family: var(--font-display); font-size: 11px; color: var(--rei-red); margin: 0 0 12px; }
+.app { 
+  max-width: 600px; margin: 0 auto; padding: 12px; min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+.header { 
+  display: flex; justify-content: space-between; align-items: center; 
+  padding: 12px 0; border-bottom: 2px solid var(--line); margin-bottom: 16px;
+}
+.title { font-family: var(--font-display); font-size: 14px; color: var(--rei-blue); text-shadow: 0 0 8px var(--rei-glow); }
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tab { 
+  flex: 1; padding: 10px; background: var(--panel); border: 1px solid var(--line); 
+  color: var(--text-dim); font-family: var(--font-display); font-size: 10px; 
+  cursor: pointer; text-align: center; transition: all 0.2s;
+}
+.tab.active { background: var(--panel-2); color: var(--rei-blue); border-color: var(--rei-blue); box-shadow: 0 0 8px var(--rei-glow); }
+.view { display: none; }
+.view.active { display: block; }
+.card { 
+  background: var(--panel); border: 1px solid var(--line); padding: 16px; 
+  margin-bottom: 12px; border-radius: 4px; position: relative;
+}
+.card.playing { border-color: var(--rei-red); box-shadow: 0 0 12px var(--rei-red-glow); }
+.card.finished { border-color: var(--magi); box-shadow: 0 0 12px var(--magi-glow); }
+.section-title { 
+  font-family: var(--font-display); font-size: 12px; color: var(--rei-blue); 
+  margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px;
+}
 .field { margin-bottom: 12px; }
-.field label { display: block; font-size: 9px; color: var(--text-dim); margin-bottom: 5px; letter-spacing: .5px; text-transform: uppercase; }
-.field input { width: 100%; background: var(--void); border: 1px solid var(--line); color: var(--text); padding: 9px; font-family: var(--font-body); font-size: 12px; border-radius: 4px; }
+.field label { display: block; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; font-weight: bold; }
+.field input, .field select { 
+  width: 100%; padding: 10px; background: var(--void); border: 1px solid var(--line); 
+  color: var(--text); font-family: var(--font-body); font-size: 14px; border-radius: 4px;
+}
 .field input:focus { outline: none; border-color: var(--rei-blue); box-shadow: 0 0 8px var(--rei-glow); }
-.hint { font-size: 9px; color: var(--text-dim); margin-top: 3px; font-style: italic; }
-.err { font-size: 9px; color: var(--rei-red); margin-top: 8px; min-height: 12px; }
-.nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; display: flex; border-top: 2px solid var(--rei-blue); background: #0a1628; z-index: 10; }
-.nav-item { flex: 1; padding: 9px 2px 10px; text-align: center; background: none; border: none; color: var(--text-dim); cursor: pointer; font-family: var(--font-body); font-size: 8px; letter-spacing: .5px; text-transform: uppercase; transition: color 0.2s; }
-.nav-item svg { display: block; margin: 0 auto 3px; }
-.nav-item.active { color: var(--rei-blue); }
-.nav-item.active .ic { fill: var(--rei-blue); }
-.ic { fill: var(--text-dim); transition: fill 0.2s; }
-.avatar { image-rendering: pixelated; object-fit: contain; background: transparent; flex-shrink: 0; border-radius: 4px; }
-.row { display: flex; align-items: center; gap: 8px; }
-.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 12px 0; }
-.stat { border: 1px solid var(--line); background: var(--panel); padding: 10px 6px; text-align: center; border-radius: 4px; }
-.stat b { display: block; font-family: var(--font-display); font-size: 13px; color: var(--rei-blue); margin-bottom: 4px; }
-.stat span { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .5px; }
-.hist-row { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--line); padding: 8px 10px; margin-bottom: 6px; font-size: 10px; border-radius: 4px; }
-.place-pill { font-size: 9px; padding: 2px 6px; border: 1px solid var(--rei-blue); color: var(--rei-blue); border-radius: 3px; }
-.place-pill.lost { border-color: var(--line); color: var(--text-dim); }
-.table-wrap { position: relative; width: 240px; height: 240px; margin: 10px auto 6px; }
-.seat { position: absolute; width: 50px; transform: translate(-50%, -50%); text-align: center; transition: all 0.3s ease; }
-.seat .avatar { width: 28px; height: 28px; margin: 0 auto 3px; }
-.seat .name { font-size: 7.5px; color: var(--text-dim); word-break: break-word; transition: color 0.3s; }
-.seat.dead { opacity: .3; }
-.seat.dead .avatar { filter: grayscale(1); }
-.seat.turn .avatar { filter: drop-shadow(0 0 8px var(--rei-red)) drop-shadow(0 0 12px var(--rei-red)); animation: pulse-red 1.5s infinite; }
-.seat.turn .name { color: var(--rei-red); font-weight: bold; }
-.seat.target .avatar { filter: drop-shadow(0 0 8px var(--rei-blue)) drop-shadow(0 0 12px var(--rei-blue)); animation: pulse-amber 1s infinite; }
-.seat.target .name { color: var(--rei-blue); font-weight: bold; }
-@keyframes pulse-red { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-@keyframes pulse-amber { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-.table-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; border: 2px solid var(--rei-blue); border-radius: 50%; background: radial-gradient(circle, var(--panel-2), var(--void)); display: flex; align-items: center; justify-content: center; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-.cyl-count { font-family: var(--font-body); font-size: 9.5px; text-align: center; line-height: 1.8; }
-.cyl-count .num { font-family: var(--font-display); font-size: 12px; margin-right: 4px; }
-.cyl-count .v-live { color: var(--rei-red); text-shadow: 0 0 6px var(--rei-red-glow); }
-.cyl-count .v-blank { color: var(--magi); text-shadow: 0 0 6px var(--magi-glow); }
-.cyl-total { font-size: 8px; color: var(--text-dim); letter-spacing: .5px; text-transform: uppercase; margin-top: 2px; }
-.turn-timer { text-align: center; font-size: 11px; color: var(--rei-red); letter-spacing: 1px; margin: 6px 0 8px; font-family: var(--font-display); text-shadow: 0 0 8px var(--rei-red-glow); animation: blink 1s infinite; }
-.target-info { text-align: center; font-size: 9px; color: var(--rei-blue); margin-bottom: 8px; font-family: var(--font-display); text-shadow: 0 0 8px var(--rei-glow); border: 1px solid var(--rei-blue); background: rgba(79, 195, 247, 0.08); padding: 8px; border-radius: 6px; animation: glow-blue 2s infinite alternate; }
-@keyframes glow-blue { from { box-shadow: 0 0 5px rgba(79, 195, 247, 0.2); } to { box-shadow: 0 0 15px rgba(79, 195, 247, 0.5); } }
-.seg-tabs { display: flex; gap: 5px; margin: 14px 0 3px; }
-.seg-tab { flex: 1; padding: 8px 3px; font-size: 8px; letter-spacing: .4px; text-transform: uppercase; border: 1px solid var(--line); background: var(--panel); color: var(--text-dim); cursor: pointer; font-family: var(--font-body); border-radius: 4px; transition: all 0.2s; }
-.seg-tab.active { color: var(--rei-blue); border-color: var(--rei-blue); background: var(--panel-2); }
-.acc-row { display: flex; align-items: center; gap: 10px; }
-.acc-row .acc-img { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.acc-row .acc-img img.locked { filter: grayscale(1) brightness(.35); }
-.acc-title { font-family: var(--font-display); font-size: 9.5px; margin-bottom: 5px; line-height: 1.4; }
-.acc-sub { font-size: 9px; color: var(--text-dim); line-height: 1.4; }
-.acc-sub.done { color: var(--magi); }
-.acc-lock { font-size: 16px; flex-shrink: 0; }
-.log { border: 1px solid var(--line); background: #060d18; padding: 8px 10px; height: 100px; overflow-y: auto; font-size: 9.5px; line-height: 1.8; color: var(--magi); margin-top: 8px; border-radius: 4px; font-family: var(--font-body); }
-.log div { opacity: .9; }
-.log div.hit { color: var(--rei-red); font-weight: bold; }
-.log div.sys { color: var(--rei-blue); }
-.result-row { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); padding: 8px; margin-bottom: 6px; border-radius: 4px; }
-.result-row.win { border-color: var(--rei-blue); background: rgba(79, 178, 247, .08); }
-.result-place { font-family: var(--font-display); font-size: 10px; width: 24px; color: var(--text-dim); }
-.result-row.win .result-place { color: var(--rei-blue); }
-.back-link { font-size: 10px; color: var(--rei-blue); cursor: pointer; display: inline-block; margin-bottom: 10px; transition: color 0.2s; }
-.back-link:hover { color: var(--rei-red); }
-.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--rei-red); color: #fff; padding: 9px 14px; font-size: 10px; font-weight: 700; z-index: 30; max-width: 380px; text-align: center; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+.hint { font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+.err { font-size: 11px; color: var(--rei-red); margin-top: 8px; min-height: 16px; }
+.btn-row { display: flex; gap: 8px; margin-top: 16px; }
+.btn { 
+  flex: 1; padding: 12px; border: none; font-family: var(--font-display); font-size: 10px; 
+  cursor: pointer; border-radius: 4px; transition: all 0.2s; text-transform: uppercase;
+}
+.btn-primary { background: var(--rei-blue); color: var(--void); box-shadow: 0 0 8px var(--rei-glow); }
+.btn-primary:hover { background: #81d4fa; }
+.btn-cyan { background: var(--panel-2); color: var(--rei-blue); border: 1px solid var(--rei-blue); }
+.btn-cyan:hover { background: var(--rei-blue); color: var(--void); }
+.btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--line); }
+.btn-ghost:hover { border-color: var(--text); color: var(--text); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.player-row { 
+  display: flex; justify-content: space-between; align-items: center; 
+  padding: 8px 0; border-bottom: 1px solid var(--line);
+}
+.player-row:last-child { border-bottom: none; }
+.player-name { font-weight: bold; font-size: 13px; }
+.player-name.me { color: var(--rei-blue); }
+.player-status { font-size: 11px; padding: 2px 6px; border-radius: 4px; }
+.status-alive { background: rgba(105, 240, 174, 0.2); color: var(--magi); }
+.status-dead { background: rgba(255, 23, 68, 0.2); color: var(--rei-red); }
+.log-container { 
+  background: var(--void); border: 1px solid var(--line); padding: 12px; 
+  height: 200px; overflow-y: auto; font-size: 11px; border-radius: 4px;
+}
+.log-entry { margin-bottom: 6px; line-height: 1.4; }
+.log-entry.hit { color: var(--rei-red); font-weight: bold; }
+.log-entry.sys { color: var(--rei-blue); }
+.log-entry.anomaly { color: #ff0; font-weight: bold; }
+.empty { text-align: center; color: var(--text-dim); font-size: 12px; padding: 20px 0; }
+.overlay { 
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+  background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; 
+  z-index: 100; padding: 16px;
+}
+.modal { 
+  background: var(--panel); border: 2px solid var(--rei-blue); padding: 20px; 
+  border-radius: 8px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 0 24px var(--rei-glow);
+}
+.avatar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.avatar-item { 
+  background: var(--void); border: 1px solid var(--line); padding: 8px; 
+  text-align: center; cursor: pointer; border-radius: 4px; transition: all 0.2s;
+}
+.avatar-item:hover { border-color: var(--rei-blue); }
+.avatar-item.locked { opacity: 0.4; cursor: not-allowed; }
+.avatar-item img { width: 48px; height: 48px; border-radius: 50%; margin-bottom: 4px; }
+.avatar-item .name { font-size: 9px; color: var(--text-dim); }
+.target-info { 
+  text-align: center; font-family: var(--font-display); font-size: 12px; 
+  color: var(--rei-red); margin-bottom: 12px; text-shadow: 0 0 8px var(--rei-red-glow);
+}
 </style>
 </head>
 <body>
-<div class="app" id="app"></div>
-<script>
-const tg = window.Telegram && window.Telegram.WebApp;
-if (tg) { tg.ready(); tg.expand(); }
-const INIT_DATA = tg ? tg.initData : '';
-const ME = tg && tg.initDataUnsafe && tg.initDataUnsafe.user
-  ? (tg.initDataUnsafe.user.username ? '@' + tg.initDataUnsafe.user.username : [tg.initDataUnsafe.user.first_name, tg.initDataUnsafe.user.last_name].filter(Boolean).join(' '))
-  : 'Тест-пилот';
-const ME_ID = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? String(tg.initDataUnsafe.user.id) : 'dev-user';
+<div class="app">
+  <div class="header">
+    <div class="title">ПРОТОКОЛ: РЕЙ</div>
+    <div id="user-info" style="font-size: 11px; color: var(--text-dim);"></div>
+  </div>
 
-async function api(path, options = {}) {
-  const res = await fetch('/api' + path, {
-    method: options.method || 'GET',
-    headers: Object.assign({ 'Content-Type': 'application/json', 'X-Telegram-Init-Data': INIT_DATA }, options.headers || {}),
-    body: options.body ? JSON.stringify(options.body) : undefined,
+  <div class="tabs">
+    <div class="tab active" data-tab="battle">БИТВА</div>
+    <div class="tab" data-tab="create">СОЗДАТЬ</div>
+    <div class="tab" data-tab="profile">ПРОФИЛЬ</div>
+  </div>
+
+  <div id="view-battle" class="view active"></div>
+  <div id="view-create" class="view"></div>
+  <div id="view-profile" class="view"></div>
+</div>
+
+<script>
+const ME_ID = window.telegram.WebApp.initDataUnsafe?.user?.id?.toString() || '0';
+window.telegram.WebApp.ready();
+window.telegram.WebApp.expand();
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    ...opts,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Init-Data': window.telegram.WebApp.initData || '',
+      ...(opts.headers || {})
+    }
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Ошибка сервера');
+  if (!res.ok) throw new Error(data.error || 'Ошибка сети');
   return data;
 }
 
-let state = { tab: 'create', openBattleId: null, modalOpen: false, battles: [], profile: null, err: null,
-  profileTab: 'overview', createForm: { prize: '', minutes: 2, max: 5, winners: 1, blanks: 10 },
+let state = { tab: 'battle', openBattleId: null, modalOpen: false, battles: [], profile: null, err: null,
+  profileTab: 'overview', createForm: { prize: '', minutes: 2, max: 5, winners: 1, blanks: 10, anomalyMadness: false, anomalyExecutioner: false },
   isOwner: false, canCreate: false, allowedList: [] };
 let pollTimer = null;
 const AVATAR_KEYS = ['default', 'glasses', 'card'];
 
 function avatarImg(key, px) {
   const img = document.createElement('img');
-  img.src = '/avatars/' + (AVATAR_KEYS.includes(key) ? key : 'default') + '.png';
-  img.alt = '';
-  img.className = 'avatar';
-  img.style.width = px + 'px'; img.style.height = px + 'px';
-  img.loading = 'lazy';
+  img.src = `/avatars/${key}.png`;
+  img.style.width = px + 'px';
+  img.style.height = px + 'px';
+  img.style.borderRadius = '50%';
+  img.style.objectFit = 'cover';
   return img;
 }
 
-function showToast(msg) {
-  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
-  document.getElementById('app').appendChild(t);
-  setTimeout(() => t.remove(), 2600);
-}
-
-async function refresh() {
-  try {
-    const [battles, profile] = await Promise.all([api('/battles'), api('/me')]);
-    state.battles = battles; state.profile = profile;
-    state.isOwner = !!profile.isOwner; state.canCreate = !!profile.canCreate;
-    if (state.isOwner && state.tab === 'admin') { state.allowedList = await api('/admin/allowed'); }
-  } catch (e) { console.error(e); }
+function act(fn) {
+  state.err = null;
   render();
+  return fn().catch(e => { state.err = e.message; render(); });
 }
 
-function setupPolling() {
-  clearInterval(pollTimer);
-  pollTimer = setInterval(() => { if (!state.modalOpen) refresh(); }, state.openBattleId ? 1000 : 3500);
-}
-
-const appEl = document.getElementById('app');
 function render() {
-  appEl.innerHTML = '';
-  appEl.appendChild(topbar());
-  const content = document.createElement('div'); content.className = 'content';
-  if (state.tab === 'profile') content.appendChild(renderProfile());
-  if (state.tab === 'pistol') content.appendChild(renderPistol());
-  if (state.tab === 'create') content.appendChild(renderCreate());
-  if (state.tab === 'admin' && state.isOwner) content.appendChild(renderAdmin());
-  appEl.appendChild(content);
-  appEl.appendChild(navbar());
-  if (state.modalOpen) appEl.appendChild(createModal());
-}
-
-function topbar() {
-  const el = document.createElement('div'); el.className = 'topbar';
-  el.innerHTML = `<div class="topbar-row">
-    <div class="brand">ПРОТОКОЛ: РЕЙ</div>
-    <div class="status"><span class="dot"></span>АКТИВЕН</div>
-  </div>
-  <div class="subtitle">FIRST CHILD · DUMMY SYSTEM · ONE SOUL, MANY BODIES</div>`;
-  return el;
-}
-
-function navbar() {
-  const items = [
-    { id: 'profile', label: 'Досье', icon: iconProfile },
-    { id: 'pistol', label: 'Барабан', icon: iconGun },
-    { id: 'create', label: 'Запуск', icon: iconPlus },
-  ];
-  if (state.isOwner) items.push({ id: 'admin', label: 'NERV', icon: iconAdmin });
-  const el = document.createElement('div'); el.className = 'nav';
-  items.forEach(it => {
-    const b = document.createElement('button');
-    b.className = 'nav-item' + (state.tab === it.id ? ' active' : '');
-    b.innerHTML = it.icon() + `<div>${it.label}</div>`;
-    b.onclick = async () => { state.tab = it.id; state.openBattleId = null; setupPolling();
-      if (it.id === 'admin') { state.allowedList = await api('/admin/allowed'); } render(); };
-    el.appendChild(b);
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === state.tab);
   });
-  return el;
-}
-
-function iconProfile() { return `<svg class="ic" width="18" height="18" viewBox="0 0 16 16"><rect x="6" y="2" width="4" height="4"/><rect x="4" y="8" width="8" height="5"/></svg>`; }
-function iconGun() { return `<svg class="ic" width="18" height="18" viewBox="0 0 16 16"><rect x="2" y="7" width="8" height="2"/><rect x="9" y="9" width="2" height="2"/><rect x="10" y="7" width="2" height="2"/><rect x="4" y="9" width="2" height="4"/></svg>`; }
-function iconPlus() { return `<svg class="ic" width="18" height="18" viewBox="0 0 16 16"><rect x="7" y="2" width="2" height="12"/><rect x="2" y="7" width="12" height="2"/></svg>`; }
-function iconAdmin() { return `<svg class="ic" width="18" height="18" viewBox="0 0 16 16"><rect x="6" y="1" width="4" height="2"/><rect x="4" y="3" width="8" height="2"/><rect x="3" y="5" width="10" height="5"/><rect x="5" y="10" width="6" height="2"/><rect x="7" y="12" width="2" height="2"/></svg>`; }
-
-function renderProfile() {
-  const wrap = document.createElement('div');
-  const p = state.profile;
-  wrap.innerHTML = `<h2 class="section-title">ДОСЬЕ ПИЛОТА</h2>`;
-  const card = document.createElement('div'); card.className = 'card';
-  card.innerHTML = `<div class="row"><div id="pf-avatar"></div>
-    <div><div style="font-family:var(--font-display);font-size:12px;">${ME}</div>
-    <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Статус: активен</div></div></div>`;
-  wrap.appendChild(card);
-  card.querySelector('#pf-avatar').appendChild(avatarImg(p ? p.avatar : 'default', 44));
-  if (!p) { wrap.appendChild(Object.assign(document.createElement('div'), { className: 'empty', textContent: 'Загрузка...' })); return wrap; }
-  const segs = document.createElement('div'); segs.className = 'seg-tabs';
-  [['overview', 'Обзор'], ['accessories', 'Аксессуары'], ['achievements', 'Достижения']].forEach(([id, label]) => {
-    const b = document.createElement('button'); b.className = 'seg-tab' + (state.profileTab === id ? ' active' : '');
-    b.textContent = label;
-    b.onclick = () => { state.profileTab = id; render(); };
-    segs.appendChild(b);
+  document.querySelectorAll('.view').forEach(v => {
+    v.classList.toggle('active', v.id === `view-${state.tab}`);
   });
-  wrap.appendChild(segs);
-  if (state.profileTab === 'accessories') wrap.appendChild(renderAccessories(p));
-  else if (state.profileTab === 'achievements') wrap.appendChild(renderAchievements(p));
-  else wrap.appendChild(renderProfileOverview(p));
-  return wrap;
-}
+  
+  const userInfo = document.getElementById('user-info');
+  if (state.profile) {
+    userInfo.textContent = state.profile.name;
+  }
 
-function renderProfileOverview(p) {
-  const wrap = document.createElement('div');
-  const stats = document.createElement('div'); stats.className = 'stat-grid';
-  stats.innerHTML = `<div class="stat"><b>${p.wins}</b><span>Побед</span></div>
-    <div class="stat"><b>${p.total}</b><span>Битв</span></div>
-    <div class="stat"><b>${p.winRate}%</b><span>Винрейт</span></div>`;
-  wrap.appendChild(stats);
-  const hist = document.createElement('div'); hist.innerHTML = `<h2 class="section-title">ИСТОРИЯ</h2>`;
-  wrap.appendChild(hist);
-  if (!p.history.length) { hist.insertAdjacentHTML('beforeend', `<div class="empty">Пока нет завершённых битв.<br>"If I die, I can be replaced."</div>`); }
-  else p.history.forEach(h => {
-    const row = document.createElement('div'); row.className = 'hist-row';
-    row.innerHTML = `<div>${h.prize}</div><div class="place-pill ${h.win ? '' : 'lost'}">${h.win ? 'Приз' : '#' + h.place}</div>`;
-    hist.appendChild(row);
-  });
-  return wrap;
-}
+  const battleView = document.getElementById('view-battle');
+  const createView = document.getElementById('view-create');
+  const profileView = document.getElementById('view-profile');
 
-const AVATAR_META = {
-  default: { title: 'Стандартная', required: 0 },
-  glasses: { title: 'Очки', required: 10 },
-  card: { title: 'ID-карта', required: 100 },
-};
+  battleView.innerHTML = '';
+  createView.innerHTML = '';
+  profileView.innerHTML = '';
 
-function renderAccessories(p) {
-  const wrap = document.createElement('div');
-  wrap.innerHTML = `<div class="hint" style="margin-bottom:10px;">Выбери облик. "I am me."</div>`;
-  Object.entries(AVATAR_META).forEach(([key, meta]) => {
-    const unlocked = meta.required === 0 || p.total >= meta.required;
-    const equipped = p.avatar === key;
-    const row = document.createElement('div'); row.className = 'card acc-row';
-    const imgWrap = document.createElement('div'); imgWrap.className = 'acc-img';
-    const img = avatarImg(key, 56);
-    if (!unlocked) img.classList.add('locked');
-    imgWrap.appendChild(img);
-    row.appendChild(imgWrap);
-    const info = document.createElement('div'); info.style.flex = '1';
-    info.innerHTML = `<div class="acc-title">${meta.title}</div>
-      <div class="acc-sub${equipped ? ' done' : ''}">${unlocked ? (equipped ? 'Активно' : 'Доступно') : `Нужно ${meta.required} игр (${p.total}/${meta.required})`}</div>`;
-    row.appendChild(info);
-    if (unlocked) {
-      const btn = document.createElement('button'); btn.className = 'btn' + (equipped ? '' : ' btn-cyan');
-      btn.style.cssText = 'font-size:9px;padding:9px 10px;';
-      btn.textContent = equipped ? 'Надето' : 'Надеть';
-      btn.disabled = equipped;
-      btn.onclick = () => act(() => api('/avatar', { method: 'POST', body: { avatar: key } }));
-      row.appendChild(btn);
+  if (state.tab === 'battle') {
+    if (state.openBattleId) {
+      const b = state.battles.find(x => x.id === state.openBattleId);
+      if (b) {
+        battleView.appendChild(renderBattle(b));
+      } else {
+        battleView.innerHTML = '<div class="empty">Битва не найдена</div>';
+      }
     } else {
-      const lock = document.createElement('div'); lock.className = 'acc-lock'; lock.textContent = '';
-      row.appendChild(lock);
+      battleView.innerHTML = '<div class="empty">Выберите битву из списка или создайте новую</div>';
+      const list = document.createElement('div');
+      state.battles.forEach(b => {
+        list.appendChild(renderBattleCard(b, true));
+      });
+      battleView.appendChild(list);
     }
-    wrap.appendChild(row);
-  });
-  return wrap;
-}
-
-function renderAchievements(p) {
-  const wrap = document.createElement('div');
-  (p.achievements || []).forEach(a => {
-    const row = document.createElement('div'); row.className = 'card acc-row';
-    const imgWrap = document.createElement('div'); imgWrap.className = 'acc-img';
-    const img = avatarImg(a.image, 56);
-    if (!a.unlocked) img.classList.add('locked');
-    imgWrap.appendChild(img);
-    row.appendChild(imgWrap);
-    const info = document.createElement('div'); info.style.flex = '1';
-    info.innerHTML = `<div class="acc-title">${a.title}</div>
-      <div class="acc-sub${a.unlocked ? ' done' : ''}">${a.unlocked ? 'Получено' : `Нужно ${a.required} игр (${p.total}/${a.required})`}</div>`;
-    row.appendChild(info);
-    wrap.appendChild(row);
-  });
-  return wrap;
-}
-
-function renderPistol() {
-  const wrap = document.createElement('div');
-  if (state.openBattleId) {
-    const b = state.battles.find(x => x.id === state.openBattleId);
-    if (b) return renderBattleDetail(b);
+  } else if (state.tab === 'create') {
+    createView.appendChild(renderCreate());
+  } else if (state.tab === 'profile') {
+    profileView.appendChild(renderProfile());
   }
-  wrap.innerHTML = `<h2 class="section-title">АКТИВНЫЕ СИНХРОНИЗАЦИИ</h2>`;
-  const playing = state.battles.filter(b => b.status === 'playing');
-  if (!playing.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Нет активных битв.<br>"I mustn't run away... oh wait, that's not my line."</div>`); }
-  else playing.forEach(b => wrap.appendChild(battleCard(b, true)));
-  const finTitle = document.createElement('h2'); finTitle.className = 'section-title'; finTitle.textContent = 'ЗАВЕРШЕНО';
-  wrap.appendChild(finTitle);
-  const fin = state.battles.filter(b => b.status === 'finished');
-  if (!fin.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Пока ничего не завершено.</div>`); }
-  else fin.slice(0, 5).forEach(b => wrap.appendChild(battleCard(b, true)));
-  return wrap;
-}
 
-function battleCard(b, clickable) {
-  const el = document.createElement('div'); el.className = 'card';
-  const statusTag = b.status === 'lobby' ? `<span class="tag">ожидание</span>`
-    : b.status === 'playing' ? `<span class="tag tag-live">бой</span>`
-    : b.status === 'finished' ? `<span class="tag tag-red">конец</span>`
-    : `<span class="tag">отмена</span>`;
-  el.innerHTML = `<div class="card-top"><div class="prize">${b.prize}</div>${statusTag}</div>
-    <div class="meta-row">
-    <div>Пилоты: <b>${b.players.length}/${b.maxPlayers}</b></div>
-    <div>Выживших: <b>${b.winnersCount}</b></div>
-    <div>Холостых: <b>${b.blanksCount}</b></div>
-    </div>`;
-  if (clickable && (b.status === 'playing' || b.status === 'finished')) {
-    el.style.cursor = 'pointer';
-    el.onclick = () => { state.openBattleId = b.id; state.tab = 'pistol'; setupPolling(); render(); };
+  if (state.modalOpen) {
+    document.body.appendChild(renderModal());
   }
-  return el;
 }
 
-function renderBattleDetail(b) {
+function renderBattleCard(b, compact = false) {
+  const card = document.createElement('div');
+  card.className = `card ${b.status === 'playing' ? 'playing' : (b.status === 'finished' ? 'finished' : '')}`;
+  
+  const header = document.createElement('div');
+  header.style.display = 'flex';
+  header.style.justifyContent = 'space-between';
+  header.style.marginBottom = '8px';
+  
+  const title = document.createElement('div');
+  title.className = 'section-title';
+  title.style.margin = '0';
+  title.textContent = `БИТВА #${b.id}`;
+  
+  const status = document.createElement('div');
+  status.style.fontSize = '10px';
+  status.style.color = b.status === 'playing' ? 'var(--rei-red)' : (b.status === 'finished' ? 'var(--magi)' : 'var(--text-dim)');
+  status.textContent = b.status === 'playing' ? 'ИДЁТ' : (b.status === 'finished' ? 'ЗАВЕРШЕНА' : 'ЛОББИ');
+  
+  header.appendChild(title);
+  header.appendChild(status);
+  card.appendChild(header);
+
+  const prize = document.createElement('div');
+  prize.style.fontSize = '14px';
+  prize.style.fontWeight = 'bold';
+  prize.style.marginBottom = '8px';
+  prize.textContent = `ПРИЗ: ${b.prize}`;
+  card.appendChild(prize);
+
+  const players = document.createElement('div');
+  players.style.fontSize = '11px';
+  players.style.color = 'var(--text-dim)';
+  players.style.marginBottom = '12px';
+  players.textContent = `ПИЛОТЫ: ${b.players.length}/${b.maxPlayers}`;
+  card.appendChild(players);
+
+  if (!compact) {
+    const pList = document.createElement('div');
+    pList.style.marginBottom = '12px';
+    b.players.forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'player-row';
+      const name = document.createElement('div');
+      name.className = `player-name ${p.user_id === ME_ID ? 'me' : ''}`;
+      name.textContent = p.name + (p.user_id === ME_ID ? ' (ТЫ)' : '');
+      const st = document.createElement('div');
+      st.className = `player-status ${p.alive ? 'status-alive' : 'status-dead'}`;
+      st.textContent = p.alive ? 'ЖИВ' : (p.place ? `${p.place} МЕСТО` : 'ВЫБЫЛ');
+      row.appendChild(name);
+      row.appendChild(st);
+      pList.appendChild(row);
+    });
+    card.appendChild(pList);
+  }
+
+  const foot = document.createElement('div');
+  foot.className = 'btn-row';
+  foot.style.marginTop = '12px';
+  
+  if (b.status === 'lobby') {
+    const already = b.players.some(p => p.user_id === ME_ID);
+    const full = b.players.length >= b.maxPlayers;
+    const joinBtn = document.createElement('button');
+    joinBtn.className = 'btn btn-primary';
+    joinBtn.style.flex = '1';
+    joinBtn.textContent = already ? 'Ты в игре' : (full ? 'Мест нет' : 'Присоединиться');
+    joinBtn.disabled = already || full;
+    joinBtn.onclick = async () => {
+      await act(() => api(`/battles/${b.id}/join`, { method: 'POST' }));
+      state.openBattleId = b.id;
+      state.tab = 'battle';
+      render();
+    };
+    foot.appendChild(joinBtn);
+    card.appendChild(foot);
+  } else {
+    card.style.cursor = 'pointer';
+    card.onclick = () => { state.openBattleId = b.id; state.tab = 'battle'; render(); };
+  }
+
+  return card;
+}
+
+function renderBattle(b) {
   const wrap = document.createElement('div');
-  const back = document.createElement('div'); back.className = 'back-link'; back.textContent = '<- назад';
-  back.onclick = () => { state.openBattleId = null; setupPolling(); render(); };
-  wrap.appendChild(back);
-  wrap.insertAdjacentHTML('beforeend', `<div class="prize" style="margin-bottom:8px;">${b.prize}</div>`);
   
-  const secsLeft = (b.status === 'playing' && b.turnStartedAt)
-    ? Math.max(0, Math.ceil((b.turnTimeoutMs - (Date.now() - b.turnStartedAt)) / 1000)) : null;
+  const header = document.createElement('div');
+  header.style.display = 'flex';
+  header.style.justifyContent = 'space-between';
+  header.style.alignItems = 'center';
+  header.style.marginBottom = '12px';
   
-  const tw = document.createElement('div'); tw.className = 'table-wrap';
-  const n = b.players.length, radius = 105;
-  const isMyTurn = b.turnUserId === ME_ID;
+  const backBtn = document.createElement('button');
+  backBtn.className = 'btn btn-ghost';
+  backBtn.style.flex = '0';
+  backBtn.style.padding = '8px 12px';
+  backBtn.textContent = '←';
+  backBtn.onclick = () => { state.openBattleId = null; render(); };
+  
+  const title = document.createElement('div');
+  title.className = 'section-title';
+  title.style.margin = '0';
+  title.textContent = `БИТВА #${b.id}`;
+  
+  header.appendChild(backBtn);
+  header.appendChild(title);
+  header.appendChild(document.createElement('div')); // spacer
+  wrap.appendChild(header);
 
-  b.players.forEach((p, i) => {
-    const angle = (i * (360 / n) - 90) * Math.PI / 180;
-    const x = 120 + radius * Math.cos(angle), y = 120 + radius * Math.sin(angle);
-    const seat = document.createElement('div');
+  const pList = document.createElement('div');
+  pList.style.marginBottom = '12px';
+  b.players.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    const left = document.createElement('div');
+    left.style.display = 'flex';
+    left.style.alignItems = 'center';
+    left.style.gap = '8px';
+    left.appendChild(avatarImg(p.avatar, 24));
+    const name = document.createElement('div');
+    name.className = `player-name ${p.user_id === ME_ID ? 'me' : ''}`;
+    name.textContent = p.name + (p.user_id === ME_ID ? ' (ТЫ)' : '');
+    left.appendChild(name);
     
-    let seatClass = 'seat';
-    if (!p.alive) seatClass += ' dead';
-    if (b.turnUserId === p.user_id) seatClass += ' turn';
-    if (isMyTurn && b.targetUserId === p.user_id) seatClass += ' target';
+    const st = document.createElement('div');
+    st.className = `player-status ${p.alive ? 'status-alive' : 'status-dead'}`;
+    st.textContent = p.alive ? 'ЖИВ' : (p.place ? `${p.place} МЕСТО` : 'ВЫБЫЛ');
     
-    seat.className = seatClass;
-    seat.style.left = x + 'px'; seat.style.top = y + 'px';
-    const isMe = p.user_id === ME_ID;
-    const turnTag = b.turnUserId === p.user_id ? `X ${secsLeft != null ? ' ' + secsLeft + 'с' : ''}` : '';
-    
-    seat.innerHTML = `<div class="av"></div><div class="name">${p.name}${isMe ? ' (ты)' : ''}${turnTag}</div>`;
-    seat.querySelector('.av').appendChild(avatarImg(p.avatar, 28));
-    tw.appendChild(seat);
+    row.appendChild(left);
+    row.appendChild(st);
+    pList.appendChild(row);
   });
-
-  const center = document.createElement('div'); center.className = 'table-center';
-  center.innerHTML = b.status === 'playing'
-    ? `<div class="cyl-count">
-      <div class="v-live"><span class="num">${b.liveLeft}</span>боевых</div>
-      <div class="v-blank"><span class="num">${b.blankLeft}</span>холостых</div>
-      <div class="cyl-total">Всего: ${b.liveLeft + b.blankLeft}</div>
-      </div>`
-    : `<div class="cyl-count" style="color:var(--rei-blue)">КОНЕЦ<br>СВЯЗИ</div>`;
-  tw.appendChild(center);
-  wrap.appendChild(tw);
-
-  const log = document.createElement('div'); log.className = 'log';
-  b.log.forEach(l => { const d = document.createElement('div'); d.className = l.cls; d.textContent = '> ' + l.text; log.appendChild(d); });
-  wrap.appendChild(log);
-  setTimeout(() => { log.scrollTop = log.scrollHeight; }, 0);
+  wrap.appendChild(pList);
 
   if (b.status === 'playing') {
-    if (isMyTurn) {
-      const timer = document.createElement('div'); timer.className = 'turn-timer';
-      timer.textContent = `${secsLeft} СЕК — НЕ УСПЕЕШЬ, УМРЁШЬ`;
-      wrap.appendChild(timer);
+    const isMyTurn = b.turnUserId === ME_ID;
+    const me = b.players.find(p => p.user_id === ME_ID);
+    
+    if (isMyTurn && me?.alive) {
+      const turnInfo = document.createElement('div');
+      turnInfo.className = 'target-info';
+      turnInfo.textContent = 'ТВОЙ ХОД';
+      wrap.appendChild(turnInfo);
 
-      if (b.targetUserId) {
-        const targetPlayer = b.players.find(p => p.user_id === b.targetUserId);
-        if (targetPlayer && targetPlayer.alive && targetPlayer.user_id !== ME_ID) {
-          const targetInfo = document.createElement('div');
-          targetInfo.className = 'target-info';
-          targetInfo.textContent = `ЦЕЛЬ: ${targetPlayer.name.toUpperCase()}`;
-          wrap.appendChild(targetInfo);
-        } else if (targetPlayer && targetPlayer.user_id === ME_ID) {
-          const targetInfo = document.createElement('div');
-          targetInfo.className = 'target-info';
-          targetInfo.textContent = `ЦЕЛЬ: ТЫ САМ`;
-          wrap.appendChild(targetInfo);
-        }
+      if (b.targetUserId === ME_ID) {
+        const targetInfo = document.createElement('div');
+        targetInfo.className = 'target-info';
+        targetInfo.textContent = `ЦЕЛЬ: ТЫ САМ`;
+        wrap.appendChild(targetInfo);
       }
 
       const controls = document.createElement('div'); controls.style.marginTop = '0'; controls.className = 'btn-row';
-      const selfBtn = document.createElement('button'); selfBtn.className = 'btn btn-primary'; selfBtn.style.flex = '1';
-      selfBtn.textContent = 'В СЕБЯ'; selfBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-self`, { method: 'POST' }));
-      const otherBtn = document.createElement('button'); otherBtn.className = 'btn btn-cyan'; otherBtn.style.flex = '1';
-      otherBtn.textContent = 'В ДРУГОГО'; otherBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-other`, { method: 'POST' }));
-      controls.appendChild(selfBtn); controls.appendChild(otherBtn); wrap.appendChild(controls);
+      
+      if (b.currentAnomaly === 'madness') {
+        const info = document.createElement('div');
+        info.className = 'hint';
+        info.style.color = 'var(--rei-red)';
+        info.style.textAlign = 'center';
+        info.style.marginBottom = '8px';
+        info.textContent = '🌀 Твой выбор ничего не решает.';
+        wrap.appendChild(info);
+        const madnessBtn = document.createElement('button');
+        madnessBtn.className = 'btn btn-primary';
+        madnessBtn.style.flex = '1';
+        madnessBtn.textContent = 'ВЫСТРЕЛ';
+        madnessBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-madness`, { method: 'POST' }));
+        controls.appendChild(madnessBtn);
+      } else if (b.currentAnomaly === 'executioner' && b.executionerTargets && b.executionerTargets.length > 0) {
+        const info = document.createElement('div');
+        info.className = 'hint';
+        info.style.color = 'var(--rei-red)';
+        info.style.textAlign = 'center';
+        info.style.marginBottom = '8px';
+        info.textContent = '🌀 Выбери жертву:';
+        wrap.appendChild(info);
+        b.executionerTargets.forEach(target => {
+          const execBtn = document.createElement('button');
+          execBtn.className = 'btn btn-cyan';
+          execBtn.style.flex = '1';
+          execBtn.style.marginBottom = '8px';
+          execBtn.textContent = `УБИТЬ: ${target.name}`;
+          execBtn.onclick = () => act(() => api(`/battles/${b.id}/execute`, { method: 'POST', body: { targetUserId: target.user_id } }));
+          controls.appendChild(execBtn);
+        });
+      } else {
+        const selfBtn = document.createElement('button'); selfBtn.className = 'btn btn-primary'; selfBtn.style.flex = '1';
+        selfBtn.textContent = 'В СЕБЯ'; selfBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-self`, { method: 'POST' }));
+        const otherBtn = document.createElement('button'); otherBtn.className = 'btn btn-cyan'; otherBtn.style.flex = '1';
+        otherBtn.textContent = 'В ДРУГОГО'; otherBtn.onclick = () => act(() => api(`/battles/${b.id}/shoot-other`, { method: 'POST' }));
+        controls.appendChild(selfBtn); controls.appendChild(otherBtn);
+      }
+      wrap.appendChild(controls);
     } else {
       const wait = document.createElement('div'); wait.className = 'empty'; wait.style.marginTop = '8px';
       const turnPlayer = b.players.find(p => p.user_id === b.turnUserId);
+      const secsLeft = b.turnStartedAt ? Math.max(0, 15 - Math.floor((Date.now() - b.turnStartedAt) / 1000)) : 15;
       wait.textContent = `${turnPlayer ? turnPlayer.name : 'Пилот'} думает... (${secsLeft} с)`;
       wrap.appendChild(wait);
     }
   } else if (b.status === 'finished') {
     const results = document.createElement('div'); results.innerHTML = `<h2 class="section-title">РЕЗУЛЬТАТЫ</h2>`;
-    [...b.players].sort((a, c) => a.place - c.place).forEach(p => {
-      const win = p.place <= b.winnersCount;
-      const row = document.createElement('div'); row.className = 'result-row' + (win ? ' win' : '');
-      const isMe = p.user_id === ME_ID;
-      row.innerHTML = `<div class="result-place">#${p.place}</div><div style="flex:1;">${p.name}${isMe ? ' (ты)' : ''}</div>
-        ${win ? '<div style="color:var(--rei-blue);font-size:9px;">приз</div>' : ''}`;
-      results.appendChild(row);
-    });
+    const winners = b.players.filter(p => p.place <= b.winnersCount).sort((a,b) => a.place - b.place);
+    if (winners.length > 0) {
+      const wDiv = document.createElement('div');
+      wDiv.style.color = 'var(--magi)';
+      wDiv.style.marginBottom = '12px';
+      wDiv.textContent = `ПОБЕДИТЕЛИ: ${winners.map(p => p.name).join(', ')}`;
+      results.appendChild(wDiv);
+    }
     wrap.appendChild(results);
   }
-  return wrap;
-}
 
-async function act(fn) {
-  try { await fn(); await refresh(); }
-  catch (e) { showToast(e.message); }
+  const logTitle = document.createElement('div');
+  logTitle.className = 'section-title';
+  logTitle.textContent = 'ЖУРНАЛ';
+  logTitle.style.marginTop = '16px';
+  wrap.appendChild(logTitle);
+
+  const logContainer = document.createElement('div');
+  logContainer.className = 'log-container';
+  b.log.forEach(l => {
+    const entry = document.createElement('div');
+    entry.className = `log-entry ${l.cls || ''}`;
+    entry.textContent = l.text;
+    logContainer.appendChild(entry);
+  });
+  logContainer.scrollTop = logContainer.scrollHeight;
+  wrap.appendChild(logContainer);
+
+  return wrap;
 }
 
 function renderCreate() {
   const wrap = document.createElement('div');
-  wrap.innerHTML = `<div class="hero">
-    <div class="hero-title">ОДИН<br>БАРАБАН.<br><span>ВСЕ РАВНЫ.</span></div>
-    <div class="hero-sub">"If I die, I can be replaced." — Создай битву, назначь приз.</div>
-  </div>`;
-  if (state.canCreate) {
-    const btn = document.createElement('button'); btn.className = 'btn btn-primary btn-full'; btn.style.marginTop = '12px';
-    btn.textContent = '+ НОВАЯ БИТВА'; btn.onclick = () => { state.modalOpen = true; render(); };
-    wrap.appendChild(btn);
-  } else {
-    const locked = document.createElement('div'); locked.className = 'empty'; locked.style.marginTop = '12px';
-    locked.textContent = 'Доступ только для командиров NERV.';
-    wrap.appendChild(locked);
+  if (!state.canCreate) {
+    wrap.innerHTML = '<div class="empty">У тебя нет прав создавать битвы. Обратись к администратору клуба.</div>';
+    return wrap;
   }
-  const curTitle = document.createElement('h2'); curTitle.className = 'section-title'; curTitle.textContent = 'ТЕКУЩИЕ';
-  wrap.appendChild(curTitle);
-  const current = state.battles.filter(b => b.status === 'lobby' || b.status === 'playing');
-  if (!current.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Нет открытых битв.<br>Стань первым пилотом.</div>`); }
-  else current.forEach(b => {
-    const card = battleCard(b, false);
-    if (b.status === 'lobby') {
-      const already = b.players.find(p => p.user_id === ME_ID);
-      const full = b.players.length >= b.maxPlayers;
-      const secsLeft = Math.max(0, Math.round((b.endsAt - Date.now()) / 1000));
-      const foot = document.createElement('div'); foot.style.marginTop = '10px';
-      foot.innerHTML = `<div style="font-size:10px;color:var(--text-dim);margin-bottom:8px;">Старт через ~${Math.ceil(secsLeft / 60)} мин.</div>`;
-      const joinBtn = document.createElement('button'); joinBtn.className = 'btn btn-cyan btn-full';
-      joinBtn.textContent = already ? 'Ты в игре' : (full ? 'Мест нет' : 'Присоединиться');
-      joinBtn.disabled = already || full;
-      joinBtn.onclick = () => act(() => api(`/battles/${b.id}/join`, { method: 'POST' }));
-      foot.appendChild(joinBtn);
-      card.appendChild(foot);
-    } else {
-      card.style.cursor = 'pointer';
-      card.onclick = () => { state.openBattleId = b.id; state.tab = 'pistol'; setupPolling(); render(); };
-    }
-    wrap.appendChild(card);
+  
+  const btn = document.createElement('button');
+  btn.className = 'btn btn-primary';
+  btn.textContent = '+ НОВАЯ БИТВА';
+  btn.onclick = () => { state.modalOpen = true; render(); };
+  wrap.appendChild(btn);
+
+  const list = document.createElement('div');
+  list.style.marginTop = '16px';
+  state.battles.filter(b => b.status === 'lobby').forEach(b => {
+    list.appendChild(renderBattleCard(b));
   });
-  const yourTitle = document.createElement('h2'); yourTitle.className = 'section-title'; yourTitle.textContent = 'ТВОИ ИГРЫ';
-  wrap.appendChild(yourTitle);
-  const yours = state.battles.filter(b => b.createdBy === ME_ID || b.players.find(p => p.user_id === ME_ID));
-  if (!yours.length) { wrap.insertAdjacentHTML('beforeend', `<div class="empty">Ты ещё не участвовал.</div>`); }
-  else yours.forEach(b => {
-    const card = battleCard(b, false);
-    if (b.status === 'finished') {
-      const me = b.players.find(p => p.user_id === ME_ID);
-      const win = me && me.place <= b.winnersCount;
-      const foot = document.createElement('div'); foot.style.marginTop = '8px';
-      foot.innerHTML = me ? (win ? `<span class="place-pill">Победа</span>` : `<span class="place-pill lost">Место #${me.place}</span>`) : '';
-      card.appendChild(foot);
-    }
-    if (b.status !== 'lobby') {
-      card.style.cursor = 'pointer';
-      card.onclick = () => { state.openBattleId = b.id; state.tab = 'pistol'; setupPolling(); render(); };
-    }
-    wrap.appendChild(card);
-  });
+  if (list.children.length === 0) {
+    list.innerHTML = '<div class="empty">Нет активных лобби</div>';
+  }
+  wrap.appendChild(list);
   return wrap;
 }
 
@@ -549,72 +486,167 @@ const CREATE_FIELDS = [
 ];
 
 function resetCreateForm() {
-  state.createForm = { prize: '', minutes: 2, max: 5, winners: 1, blanks: 10 };
+  state.createForm = { prize: '', minutes: 2, max: 5, winners: 1, blanks: 10, anomalyMadness: false, anomalyExecutioner: false };
 }
 
 function renderAdmin() {
   const wrap = document.createElement('div');
   wrap.innerHTML = `<h2 class="section-title">КОМАНДОВАНИЕ NERV</h2>
-    <div class="hint" style="margin-bottom:12px;">Командир всегда может создавать битвы. Добавь сюда Telegram ID или @username для допуска.</div>`;
-  const addRow = document.createElement('div'); addRow.className = 'card';
-  addRow.innerHTML = `<div class="field" style="margin-bottom:10px;">
-    <label>ID или @username</label>
-    <input id="adm-input" placeholder="618124780 или @nickname">
-  </div>
-  <div class="err" id="adm-err"></div>
-  <button class="btn btn-primary btn-full" id="adm-add">ДОПУСТИТЬ</button>`;
-  wrap.appendChild(addRow);
-  addRow.querySelector('#adm-add').onclick = async () => {
-    const val = addRow.querySelector('#adm-input').value;
-    try {
-      state.allowedList = await api('/admin/allowed', { method: 'POST', body: { identifier: val } });
-      addRow.querySelector('#adm-input').value = '';
-      render();
-    } catch (e) { addRow.querySelector('#adm-err').textContent = e.message; }
-  };
-  const listTitle = document.createElement('h2'); listTitle.className = 'section-title'; listTitle.textContent = 'ДОПУЩЕНЫ';
-  wrap.appendChild(listTitle);
-  const ownerCard = document.createElement('div'); ownerCard.className = 'card';
-  ownerCard.innerHTML = `<div class="row"><div style="flex:1;">Командир</div><span class="tag tag-live">навсегда</span></div>`;
-  wrap.appendChild(ownerCard);
-  if (!state.allowedList.length) {
-    wrap.appendChild(Object.assign(document.createElement('div'), { className: 'empty', textContent: 'Никого не допустил.' }));
-  } else {
-    state.allowedList.forEach(entry => {
-      const row = document.createElement('div'); row.className = 'card';
-      row.innerHTML = `<div class="row"><div style="flex:1;">${entry.label}</div></div>`;
-      const rmBtn = document.createElement('button'); rmBtn.className = 'btn btn-ghost btn-full'; rmBtn.style.marginTop = '8px';
-      rmBtn.textContent = 'Отозвать допуск';
-      rmBtn.onclick = async () => {
-        state.allowedList = await api('/admin/allowed/' + encodeURIComponent(entry.identifier), { method: 'DELETE' });
-        render();
-      };
-      row.appendChild(rmBtn);
-      wrap.appendChild(row);
+    <div class="hint" style="margin-bottom:12px;">Командир всегда может создавать битвы. Добавь сюда пилотов по ID или имени.</div>
+    <div class="field"><label>Добавить пилота (ID или @username)</label>
+    <input id="admin-add" type="text" placeholder="123456789 или @name">
+    <div class="btn-row" style="margin-top:8px;">
+    <button class="btn btn-primary" id="admin-add-btn">Добавить</button>
+    </div></div>
+    <div class="err" id="admin-err"></div>
+    <h3 class="section-title" style="margin-top:24px;">СПИСОК ДОПУЩЕННЫХ</h3>
+    <div id="admin-list"></div>`;
+  
+  const list = wrap.querySelector('#admin-list');
+  state.allowedList.forEach(a => {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    row.innerHTML = `<span>${a.label}</span>`;
+    const del = document.createElement('button');
+    del.className = 'btn btn-ghost';
+    del.style.flex = '0';
+    del.style.padding = '4px 8px';
+    del.textContent = 'X';
+    del.onclick = () => act(async () => {
+      await api(`/admin/allowed/${encodeURIComponent(a.identifier)}`, { method: 'DELETE' });
+      await refresh();
     });
-  }
+    row.appendChild(del);
+    list.appendChild(row);
+  });
+
+  wrap.querySelector('#admin-add-btn').onclick = () => {
+    const val = wrap.querySelector('#admin-add').value.trim();
+    if (!val) return;
+    act(async () => {
+      await api('/admin/allowed', { method: 'POST', body: { identifier: val, label: val } });
+      wrap.querySelector('#admin-add').value = '';
+      await refresh();
+    }).catch(e => { wrap.querySelector('#admin-err').textContent = e.message; });
+  };
+
   return wrap;
 }
 
-function createModal() {
+function renderProfile() {
+  const wrap = document.createElement('div');
+  if (!state.profile) return wrap;
+
+  const p = state.profile;
+  const card = document.createElement('div');
+  card.className = 'card';
+  
+  const top = document.createElement('div');
+  top.style.display = 'flex';
+  top.style.alignItems = 'center';
+  top.style.gap = '16px';
+  top.appendChild(avatarImg(p.avatar, 64));
+  
+  const info = document.createElement('div');
+  info.innerHTML = `<div style="font-size:16px; font-weight:bold; margin-bottom:4px;">${p.name}</div>
+    <div style="font-size:12px; color:var(--text-dim);">Побед: ${p.wins} / ${p.total} (Винрейт: ${p.winRate}%)</div>`;
+  top.appendChild(info);
+  card.appendChild(top);
+
+  const tabs = document.createElement('div');
+  tabs.className = 'tabs';
+  tabs.style.marginTop = '16px';
+  tabs.innerHTML = `<div class="tab ${state.profileTab === 'overview' ? 'active' : ''}" data-ptab="overview">ОБЗОР</div>
+    <div class="tab ${state.profileTab === 'avatars' ? 'active' : ''}" data-ptab="avatars">АКСЕССУАРЫ</div>
+    ${state.isOwner ? '<div class="tab" data-ptab="admin">АДМИН</div>' : ''}`;
+  card.appendChild(tabs);
+
+  tabs.querySelectorAll('.tab').forEach(t => {
+    t.onclick = () => { state.profileTab = t.dataset.ptab; render(); };
+  });
+
+  const content = document.createElement('div');
+  content.style.marginTop = '16px';
+
+  if (state.profileTab === 'overview') {
+    if (p.history.length === 0) {
+      content.innerHTML = '<div class="empty">История пуста</div>';
+    } else {
+      p.history.slice(0, 10).forEach(h => {
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        row.innerHTML = `<span style="color:${h.win ? 'var(--magi)' : 'var(--text-dim)'}">${h.prize}</span>
+          <span class="player-status ${h.win ? 'status-alive' : 'status-dead'}">${h.place} место</span>`;
+        content.appendChild(row);
+      });
+    }
+  } else if (state.profileTab === 'avatars') {
+    const grid = document.createElement('div');
+    grid.className = 'avatar-grid';
+    AVATAR_KEYS.forEach(key => {
+      const meta = { default: {title: 'Стандарт', req: 0}, glasses: {title: 'Очки', req: 10}, card: {title: 'Карта', req: 100} }[key];
+      const unlocked = p.total >= meta.req;
+      const item = document.createElement('div');
+      item.className = `avatar-item ${!unlocked ? 'locked' : ''}`;
+      if (key === p.avatar) item.style.borderColor = 'var(--rei-blue)';
+      item.innerHTML = `<div style="margin-bottom:4px;">${avatarImg(key, 48).outerHTML}</div>
+        <div class="name">${meta.title}</div>
+        <div class="name" style="color:${unlocked ? 'var(--magi)' : 'var(--rei-red)'}">${unlocked ? '✅' : meta.req + ' игр'}</div>`;
+      if (unlocked && key !== p.avatar) {
+        item.onclick = () => act(async () => {
+          await api('/avatar', { method: 'POST', body: { avatar: key } });
+          await refresh();
+        });
+      }
+      grid.appendChild(item);
+    });
+    content.appendChild(grid);
+  } else if (state.profileTab === 'admin' && state.isOwner) {
+    content.appendChild(renderAdmin());
+  }
+
+  card.appendChild(content);
+  wrap.appendChild(card);
+  return wrap;
+}
+
+function renderModal() {
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  
   const f = state.createForm;
-  const overlay = document.createElement('div'); overlay.className = 'overlay';
-  const modal = document.createElement('div'); modal.className = 'modal';
-  modal.innerHTML = `<h3>НОВАЯ БИТВА</h3>
-    <div class="field"><label>Приз</label><input id="f-prize" placeholder="500, промокод..." value="${f.prize}"></div>
-    <div class="field"><label>Старт через (минут)</label><input id="f-minutes" type="number" min="1" value="${f.minutes}"></div>
+  modal.innerHTML = `<h2 class="section-title">НОВАЯ БИТВА</h2>
+    <div class="field"><label>Приз</label><input id="f-prize" type="text" value="${f.prize}" placeholder="Например: 100 звезд"></div>
+    <div class="field"><label>Минут до старта</label><input id="f-minutes" type="number" min="1" value="${f.minutes}">
+    <div class="hint">Минимум 1.</div></div>
     <div class="field"><label>Макс. пилотов</label><input id="f-max" type="number" min="2" value="${f.max}">
     <div class="hint">Минимум 2.</div></div>
     <div class="field"><label>Выживших</label><input id="f-winners" type="number" min="1" value="${f.winners}">
     <div class="hint">Меньше макс. пилотов.</div></div>
     <div class="field"><label>Холостых</label><input id="f-blanks" type="number" min="10" value="${f.blanks}">
     <div class="hint">Минимум 10.</div></div>
+    <div class="field" style="margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px;">
+      <label style="color: var(--rei-blue); font-weight: bold; margin-bottom: 8px; display: block;">🌀 АНОМАЛИИ (необязательно)</label>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="f-anomaly-madness" style="transform: scale(1.2);"> 
+          <span>БЕЗУМИЕ (случайная цель)</span>
+        </label>
+        <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="f-anomaly-executioner" style="transform: scale(1.2);"> 
+          <span>ВЫБОР ПАЛАЧА (мгновенная казнь)</span>
+        </label>
+      </div>
+    </div>
     <div class="err" id="f-err"></div>
     <div class="btn-row">
     <button class="btn btn-ghost" style="flex:1;" id="f-cancel">Отмена</button>
     <button class="btn btn-primary" style="flex:1;" id="f-submit">Запуск</button>
     </div>`;
   overlay.appendChild(modal);
+  
   const submit = async () => {
     const data = {
       prize: state.createForm.prize,
@@ -622,14 +654,19 @@ function createModal() {
       maxPlayers: parseInt(state.createForm.max || 0),
       winnersCount: parseInt(state.createForm.winners || 0),
       blanksCount: parseInt(state.createForm.blanks || 0),
+      anomalyMadness: state.createForm.anomalyMadness,
+      anomalyExecutioner: state.createForm.anomalyExecutioner,
     };
     try {
-      await api('/battles', { method: 'POST', body: data });
+      const newBattle = await api('/battles', { method: 'POST', body: data });
       state.modalOpen = false;
       resetCreateForm();
+      state.openBattleId = newBattle.id;
+      state.tab = 'battle';
       await refresh();
     } catch (e) { modal.querySelector('#f-err').textContent = e.message; }
   };
+  
   CREATE_FIELDS.forEach((fld, idx) => {
     const input = modal.querySelector('#' + fld.id);
     input.oninput = () => { state.createForm[fld.key] = input.value; };
@@ -641,11 +678,60 @@ function createModal() {
       else { submit(); }
     };
   });
+  
+  const madnessChk = modal.querySelector('#f-anomaly-madness');
+  madnessChk.onchange = () => { state.createForm.anomalyMadness = madnessChk.checked; };
+  const execChk = modal.querySelector('#f-anomaly-executioner');
+  execChk.onchange = () => { state.createForm.anomalyExecutioner = execChk.checked; };
+  
   overlay.onclick = (e) => { if (e.target === overlay) { state.modalOpen = false; render(); } };
   modal.querySelector('#f-cancel').onclick = () => { state.modalOpen = false; render(); };
   modal.querySelector('#f-submit').onclick = submit;
   return overlay;
 }
+
+async function refresh() {
+  try {
+    const [battles, profile] = await Promise.all([
+      api('/battles'),
+      api('/me')
+    ]);
+    state.battles = battles;
+    state.profile = profile;
+    state.isOwner = profile.isOwner;
+    state.canCreate = profile.canCreate;
+    if (profile.isOwner) {
+      state.allowedList = await api('/admin/allowed');
+    }
+    render();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function setupPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(() => {
+    if (state.openBattleId) {
+      const b = state.battles.find(x => x.id === state.openBattleId);
+      if (b && (b.status === 'playing' || b.status === 'finished')) {
+        api(`/battles/${b.id}`).then(newB => {
+          const idx = state.battles.findIndex(x => x.id === newB.id);
+          if (idx !== -1) state.battles[idx] = newB;
+          render();
+        }).catch(() => {});
+      }
+    }
+  }, 2000);
+}
+
+document.querySelectorAll('.tab[data-tab]').forEach(t => {
+  t.onclick = () => {
+    state.tab = t.dataset.tab;
+    if (state.tab !== 'battle') state.openBattleId = null;
+    render();
+  };
+});
 
 refresh();
 setupPolling();
