@@ -55,24 +55,28 @@ CREATE TABLE IF NOT EXISTS allowed_creators (
 );
 `);
 
-// Миграции: добавляем отсутствующие колонки
+// Миграции: добавляем отсутствующие колонки для старых баз
 try {
   const tableInfo = db.pragma("table_info(battles)");
   const columns = tableInfo.map(col => col.name);
   
-  if (!columns.includes('turn_started_at')) db.exec(`ALTER TABLE battles ADD COLUMN turn_started_at INTEGER;`);
-  if (!columns.includes('target_user_id')) db.exec(`ALTER TABLE battles ADD COLUMN target_user_id TEXT;`);
-  if (!columns.includes('remaining_place')) db.exec(`ALTER TABLE battles ADD COLUMN remaining_place INTEGER;`);
+  if (!columns.includes('turn_started_at')) {
+    db.exec(`ALTER TABLE battles ADD COLUMN turn_started_at INTEGER;`);
+    console.log('✅ Добавлена колонка turn_started_at');
+  }
   
-  // Новые колонки для системы аномалий
-  if (!columns.includes('anomaly_madness')) db.exec(`ALTER TABLE battles ADD COLUMN anomaly_madness INTEGER DEFAULT 0;`);
-  if (!columns.includes('anomaly_executioner')) db.exec(`ALTER TABLE battles ADD COLUMN anomaly_executioner INTEGER DEFAULT 0;`);
-  if (!columns.includes('pending_anomalies')) db.exec(`ALTER TABLE battles ADD COLUMN pending_anomalies TEXT DEFAULT '[]';`);
-  if (!columns.includes('current_anomaly')) db.exec(`ALTER TABLE battles ADD COLUMN current_anomaly TEXT;`);
-  if (!columns.includes('executioner_targets')) db.exec(`ALTER TABLE battles ADD COLUMN executioner_targets TEXT;`);
+  if (!columns.includes('target_user_id')) {
+    db.exec(`ALTER TABLE battles ADD COLUMN target_user_id TEXT;`);
+    console.log('✅ Добавлена колонка target_user_id');
+  }
+  
+  if (!columns.includes('remaining_place')) {
+    db.exec(`ALTER TABLE battles ADD COLUMN remaining_place INTEGER;`);
+    console.log('✅ Добавлена колонка remaining_place');
+  }
   
 } catch (e) {
-  console.error('⚠️  Ошибка при миграции базы данных:', e.message);
+  console.error('️  Ошибка при миграции базы данных:', e.message);
 }
 
 module.exports = db;
