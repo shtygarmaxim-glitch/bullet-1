@@ -1,40 +1,39 @@
 const express = require('express');
 const game = require('./game');
 const admin = require('./admin');
+const auth = require('./auth');
 
-function requireOwner(req, res, next) {
-  if (!admin.isOwner(req.user)) return res.status(403).json({ error: 'Доступно только владельцу.' });
-  next();
-}
-
-function buildRouter() {
+module.exports = function createRoutes(app) {
   const router = express.Router();
 
-  router.get('/battles', (req, res) => {
-    res.json(game.listBattles());
+  // Middleware: достаём пользователя из Telegram initData
+  router.use((req, res, next) => {
+    try {
+      req.user = auth.getUserFromInitData(req.headers['x-telegram-init-data']);
+    } catch (e) {
+      // Для локальной разработки без Telegram — тестовый пользователь
+      if (process.env.ALLOW_DEV_FALLBACK === '1') {
+        req.user = { id: 'dev-user', name: 'Тест-пилот' };
+      } else {
+        return res.status(401).json({ error: 'Неверная подпись Telegram' });
+      }
+    }
+    next();
   });
 
-  router.get('/battles/:id', (req, res) => {
-    const battle = game.getBattle(Number(req.params.id));
-    if (!battle) return res.status(404).json({ error: 'Не найдено.' });
-    res.json(battle);
+  // === Битвы ===
+  router.get('/battles', (req, res) => {
+    try {
+      res.json(game.listBattles());
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
   });
 
   router.post('/battles', (req, res) => {
-    if (!admin.isAllowed(req.user)) {
-      return res.status(403).json({ error: 'У тебя нет прав создавать битвы. Обратись к администратору клуба.' });
-    }
     try {
-      const b = game.createBattle(req.user, {
-        prize: req.body.prize,
-        minutes: Number(req.body.minutes),
-        maxPlayers: Number(req.body.maxPlayers),
-        winnersCount: Number(req.body.winnersCount),
-        blanksCount: Number(req.body.blanksCount),
-        anomalyMadness: req.body.anomalyMadness === true || req.body.anomalyMadness === 'true',
-        anomalyExecutioner: req.body.anomalyExecutioner === true || req.body.anomalyExecutioner === 'true',
-      });
-      res.json(b);
+      const battle = game.createBattle(req.user, req.body);
+      res.json(battle);
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
@@ -42,7 +41,8 @@ function buildRouter() {
 
   router.post('/battles/:id/join', (req, res) => {
     try {
-      res.json(game.joinBattle(req.user, Number(req.params.id)));
+      const battle = game.joinBattle(req.user, parseInt(req.params.id));
+      res.json(battle);
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
@@ -50,7 +50,8 @@ function buildRouter() {
 
   router.post('/battles/:id/shoot-self', (req, res) => {
     try {
-      res.json(game.shootSelf(req.user, Number(req.params.id)));
+      const battle = game.shootSelf(req.user, parseInt(req.params.id));
+      res.json(battle);
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
@@ -58,62 +59,64 @@ function buildRouter() {
 
   router.post('/battles/:id/shoot-other', (req, res) => {
     try {
-      res.json(game.shootOther(req.user, Number(req.params.id)));
+      const battle = game.shootOther(req.user, parseInt(req.params.id));
+      res.json(battle);
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
   });
 
-  router.post('/battles/:id/shoot-madness', (req, res) => {
-    try {
-      res.json(game.shootMadness(req.user, Number(req.params.id)));
-    } catch (e) {
-      res.status(400).json({ error: e.message });
-    }
-  });
-
-  router.post('/battles/:id/execute', (req, res) => {
-    try {
-      res.json(game.executeTarget(req.user, Number(req.params.id), req.body.targetUserId));
-    } catch (e) {
-      res.status(400).json({ error: e.message });
-    }
-  });
-
+  // === Профиль ===
   router.get('/me', (req, res) => {
-    const profile = game.getProfile(req.user);
-    res.json(Object.assign({
-      isOwner: admin.isOwner(req.user),
-      canCreate: admin.isAllowed(req.user),
-    }, profile));
+    try {
+      const profile = game.getProfile(req.user);
+      profile.isOwner = admin.isOwner(req.user);
+      profile.canCreate = admin.isOwner(req.user) || admin.isAllowed(req.user);
+      res.json(profile);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
   });
 
+  // === Аватар ===
   router.post('/avatar', (req, res) => {
     try {
-      res.json(game.setAvatar(req.user, req.body.avatar));
+      const result = game.setAvatar(req.user, req.body.avatar);
+      res.json(result);
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
   });
 
-  // ---- Админка (только владелец) ----
-  router.get('/admin/allowed', requireOwner, (req, res) => {
-    res.json(admin.listAllowed());
-  });
-
-  router.post('/admin/allowed', requireOwner, (req, res) => {
+  // === Админка ===
+  router.get('/admin/allowed', (req, res) => {
     try {
-      res.json(admin.addAllowed(req.body.identifier));
+      if (!admin.isOwner(req.user)) return res.status(403).json({ error: 'Доступ запрещён' });
+      res.json(admin.getAllowed());
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  router.post('/admin/allowed', (req, res) => {
+    try {
+      if (!admin.isOwner(req.user)) return res.status(403).json({ error: 'Доступ запрещён' });
+      const list = admin.addAllowed(req.body.identifier);
+      res.json(list);
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
   });
 
-  router.delete('/admin/allowed/:identifier', requireOwner, (req, res) => {
-    res.json(admin.removeAllowed(req.params.identifier));
+  router.delete('/admin/allowed/:identifier', (req, res) => {
+    try {
+      if (!admin.isOwner(req.user)) return res.status(403).json({ error: 'Доступ запрещён' });
+      const list = admin.removeAllowed(req.params.identifier);
+      res.json(list);
+    } catch (e) {
+      res.status(400).json({ error: e.message });
+    }
   });
 
-  return router;
-}
-
-module.exports = buildRouter;
+  app.use('/api', router);
+};
